@@ -25,6 +25,7 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
     var ref = FIRDatabase.database().reference() //Root of the realtime database
     var items = [Item]()
     let college = "hmc"
+    var userName: String?
     
     
     
@@ -39,11 +40,25 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(AddNewItem.dismissKeyboard))
         view.addGestureRecognizer(tap)
         self.navigationController?.navigationBarHidden = false
+        profileInfo()
     }
     
     override func dismissKeyboard() {
         //Causes the view (or one of its embedded text fields) to resign the first responder status.
         view.endEditing(true)
+    }
+    
+    func profileInfo() {
+        if let user = FIRAuth.auth()?.currentUser {
+            //Get general profile info from database
+            let dataRef = ref.child("/user/\(user.uid)/profile")
+            _ = dataRef.observeEventType(FIRDataEventType.Value, withBlock: { (snapshot) in
+                let data = snapshot.value as? [String : AnyObject]
+                //self.college.text = data?["college"] as? String
+                self.userName = data?["name"] as? String
+            })
+        }
+
     }
     
     
@@ -56,6 +71,7 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
     func addNewAlbum() {
         
         
+        let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .MediumStyle, timeStyle: .ShortStyle)
         
         //If there are no items in the album, show an alert popup.
         if collectionView.visibleCells().count == 0 {
@@ -118,15 +134,34 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                     let nameOfAlbum = albumName.text!
                     
                     
+                    var details = [String: AnyObject]()
+                    var imageDetail = [String: AnyObject]()
+                    var imageDetail2 = [String: AnyObject]()
                     
+                    if let user = FIRAuth.auth()?.currentUser {
+                        
+                        
+                    print("user name!!!")
+                    //print (string.dynamicType)
+                    print(uid) 
+                    print(userName)
+                    print(nameOfAlbum.dynamicType)
+                    print(userName.dynamicType)
+                    print(timestamp.dynamicType)
+                        print(uid.dynamicType)
                     
-                    let details = ["price": price,
+                    details = ["price": price,
                                    "description": description,
                                    "tag": "electronics",
-                                   "name": name]
+                                   "sellerId": uid! as NSString,
+                                   "sellerName": userName!,
+                                   "timestamp": timestamp,
+                                   "name": name,
+                                    "albumName": nameOfAlbum]
+                        
                     
                     // (**** Add in item-based album tags)
-                    let imageDetail = ["name": name,
+                    imageDetail = ["name": name,
                                        "price": price,
                                        "description": description,
                                        "location": loc,
@@ -134,12 +169,15 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                     
                     
                     
-                    let imageDetail2 = ["name": name,
+                    imageDetail2 = ["name": name,
                                        "price": price,
                                        "description": description,
                                        "user": uid! as NSString,
+                                       "sellerName": userName!,
                                        "location": loc,
                                        "albumName": nameOfAlbum]
+                        
+                        }
                     
                     let childUpdates = ["\(college)/user/\(uid!)/albums/\(key)/unsoldItems/\(imageKey)": details,
                                         "\(college)/albums/\(key)/unsoldItems/\(imageKey)": details,
@@ -151,12 +189,13 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                 }
                 
                 
+                
                 //Store the album details
                 let details = ["albumName": self.albumName.text!,
                                "location": location.text! as NSString]
                 
-                let childUpdates = ["\(college)/user/\(uid!)/albums/\(key)/albumDetails": details,
-                                    "\(college)/albums/\(key)/unsoldItems/": ["albumName" : albumName]]
+                let childUpdates = ["\(college)/user/\(uid!)/albums/\(key)/albumDetails": details]//,
+                                 //   "\(college)/albums/\(key)/unsoldItems/": ["albumName" : albumName.text!]]
                 
                 ref.updateChildValues(childUpdates as [NSObject : AnyObject]) //(*** Try to do this all in on ref.updateChildValues call so it's all atomic)
                 
@@ -216,7 +255,7 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
             return
         }
         
-        let item = Item(itemDescription: "description", tags: "", itemName: "", price: "", picture: newImage, seller: "")
+        let item = Item(itemDescription: "description", tags: "", itemName: "", price: "", picture: newImage, seller: "", timestamp: "")
         items.append(item)
         collectionView.reloadData()
         dismissViewControllerAnimated(true, completion: nil)

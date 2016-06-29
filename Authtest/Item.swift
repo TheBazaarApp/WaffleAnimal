@@ -19,14 +19,16 @@ class Item: NSObject {
     var sold: Bool?
     var picture: UIImage
     var seller: String
+    var timestamp: String
     
-    init(itemDescription: String, tags: String, itemName: String, price: String, picture: UIImage, seller: String) {
+    init(itemDescription: String, tags: String, itemName: String, price: String, picture: UIImage, seller: String, timestamp: String) {
         self.itemDescription = itemDescription
         self.tags = tags
         self.itemName = itemName
         self.price = price
         self.picture = picture
         self.seller = seller
+        self.timestamp = timestamp
     }
     
     func getPicture() -> UIImage {
@@ -62,6 +64,10 @@ class Item: NSObject {
     
     func getSold() -> Bool {
         return sold!
+    }
+    
+    func getTimestamp() -> String {
+        return timestamp
     }
 
 }
