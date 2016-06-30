@@ -120,6 +120,13 @@ class CreateAccountViewController: UIViewController {
             //nameField.text = user.displayName
             let changeRequest = user.profileChangeRequest()
             changeRequest.displayName = self.nameField.text
+            changeRequest.commitChangesWithCompletion { error in
+                if let error = error {
+                    print("an error happened!")
+                } else {
+                    print("whatever")
+                }
+            }
             self.ref.child("hmc/user/\(user.uid)/profile/college").setValue(collegeField.text)
             self.ref.child("hmc/user/\(user.uid)/profile/name").setValue(nameField.text)
 
