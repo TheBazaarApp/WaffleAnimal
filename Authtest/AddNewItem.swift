@@ -38,7 +38,7 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
         print("user's display name!!!")
         print(user!.displayName)
         uid = user!.uid
-        userName = user?.displayName
+        userName = user?.displayName 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: #selector(addNewAlbum))
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(AddNewItem.dismissKeyboard))
         view.addGestureRecognizer(tap)
