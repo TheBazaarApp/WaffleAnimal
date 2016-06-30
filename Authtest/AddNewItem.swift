@@ -35,12 +35,15 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
     override func viewDidLoad() {
         super.viewDidLoad()
         let user = FIRAuth.auth()?.currentUser
+        print("user's display name!!!")
+        print(user!.displayName)
         uid = user!.uid
+        userName = user?.displayName
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: #selector(addNewAlbum))
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(AddNewItem.dismissKeyboard))
         view.addGestureRecognizer(tap)
         self.navigationController?.navigationBarHidden = false
-        profileInfo()
+        //profileInfo()
     }
     
     override func dismissKeyboard() {
@@ -48,18 +51,18 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
         view.endEditing(true)
     }
     
-    func profileInfo() {
-        if let user = FIRAuth.auth()?.currentUser {
-            //Get general profile info from database
-            let dataRef = ref.child("/user/\(user.uid)/profile")
-            _ = dataRef.observeEventType(FIRDataEventType.Value, withBlock: { (snapshot) in
-                let data = snapshot.value as? [String : AnyObject]
-                //self.college.text = data?["college"] as? String
-                self.userName = data?["name"] as? String
-            })
-        }
-
-    }
+//    func profileInfo() {
+//        if let user = FIRAuth.auth()?.currentUser {
+//            //Get general profile info from database
+//            let dataRef = ref.child("/user/\(user.uid)/profile")
+//            _ = dataRef.observeEventType(FIRDataEventType.Value, withBlock: { (snapshot) in
+//                let data = snapshot.value as? [String : AnyObject]
+//                //self.college.text = data?["college"] as? String
+//                //self.userName = data?["name"] as? String
+//            })
+//        }
+//
+//    }
     
     
     
@@ -140,15 +143,6 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                     
                     if let user = FIRAuth.auth()?.currentUser {
                         
-                        
-                    print("user name!!!")
-                    //print (string.dynamicType)
-                    print(uid) 
-                    print(userName)
-                    print(nameOfAlbum.dynamicType)
-                    print(userName.dynamicType)
-                    print(timestamp.dynamicType)
-                        print(uid.dynamicType)
                     
                     details = ["price": price,
                                    "description": description,
