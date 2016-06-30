@@ -23,6 +23,22 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     @IBOutlet weak var college: UILabel!
     
     
+    @IBAction func logOut(sender: AnyObject) {
+        let ac = UIAlertController(title: "Logout", message: "Are you sure you want to logout?", preferredStyle: .Alert)
+        let sign = { (action: UIAlertAction) -> Void in
+            try! FIRAuth.auth()!.signOut()
+            self.performSegueWithIdentifier("tiana", sender: sender)
+        }
+        ac.addAction(UIAlertAction(title: "Okay", style: .Default, handler: sign))
+        ac.addAction(UIAlertAction(title: "Cancel", style: .Default, handler: nil))
+        self.presentViewController(ac, animated: true, completion: nil)
+        
+        
+
+    }
+
+    
+    
     var ref = FIRDatabase.database().reference() //create database reference
     let storageRef = FIRStorage.storage().referenceForURL("gs://bubbleu-app.appspot.com") //create storage reference
     var displayedUnsold = [String]()
@@ -91,7 +107,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     func getNormalProfileInfo() {
         if let user = FIRAuth.auth()?.currentUser {
             //Get general profile info from database
-            let dataRef = ref.child("/user/\(user.uid)/profile")
+            let dataRef = ref.child("hmc/user/\(user.uid)/profile")
             _ = dataRef.observeEventType(FIRDataEventType.Value, withBlock: { (snapshot) in
                 let data = snapshot.value as? [String : AnyObject]
                 self.college.text = data?["college"] as? String
@@ -115,7 +131,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
         if let user = FIRAuth.auth()?.currentUser {
             
             //Get unsold items from the database and storage
-            let imageRef = ref.child("/user/\(user.uid)/unsoldItems")
+            let imageRef = ref.child("hmc/user/\(user.uid)/unsoldItems")
             _ = imageRef.observeSingleEventOfType(FIRDataEventType.Value, withBlock: { (snapshot) in
                 
                 if let allItems = snapshot.value as? [String : AnyObject] {
@@ -146,7 +162,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     func showUnsold(){
         let imageViews = [unsoldImage1, unsoldImage2, unsoldImage3]
         for i in 0...(displayedUnsold.count - 1) {
-            let imageRef = storageRef.child("users/\(uid!)/unsoldItems/\(displayedUnsold[i])") //Path to the image in stoage
+            let imageRef = storageRef.child("hmc/user/\(uid!)/unsoldItems/\(displayedUnsold[i])") //Path to the image in stoage
             imageRef.downloadURLWithCompletion{ (URL, error) -> Void in  //Download the image
                 if (error != nil) {
                     print("displayedID")
@@ -187,8 +203,6 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
         if segue.identifier == "cinderella" { //Called when the user clicks on the "Unsold Items" button
             if let destination = segue.destinationViewController as? ViewItems {
                 destination.unsold = true
-
-
             }
         } else {
             if segue.identifier == "editProfile " {
@@ -198,30 +212,8 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
             }
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    //////////////////////////////////// Login; ***Take this out later! ///////////////////////////////////
-    
-    
-    
-    
-    func login() {
-        FIRAuth.auth()?.signInWithEmail("dagarwal@g.hmc.edu", password:"21081997", completion: {
-            user, error in
-            if error != nil{
-                print("Entered incorrectly! Are you an imbicile?")
-            } else {
-            }
-        })
-    }
-    
-    
-    
-    
 }
+    
+    
+
+    

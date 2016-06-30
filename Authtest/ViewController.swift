@@ -16,12 +16,25 @@ class ViewController: UIViewController {
     
     @IBOutlet var Password: UITextField!
     
+    override func viewWillAppear(animated: Bool) {
+       super.viewWillAppear(animated)
+        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
+            if let user = user {
+                self.performSegueWithIdentifier("SWRevealViewController", sender: nil)
+            }
+        }
+
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.init(red: 0.0, green: 0.1, blue: 0.6, alpha: 0.9)
+        self.navigationController?.navigationBarHidden = true
+        self.tabBarController?.tabBar.hidden = true
+       // self.view.backgroundColor = UIColor.init(red: 0.0, green: 0.1, blue: 0.6, alpha: 0.9)
         // Do any additional setup after loading the view, typically from a nib.
         self.hideKeyboardWhenTappedAround()
     }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

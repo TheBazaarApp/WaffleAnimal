@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseDatabase
 
 class CreateAccountViewController: UIViewController {
 
@@ -18,6 +19,13 @@ class CreateAccountViewController: UIViewController {
     @IBOutlet var passwordField: UITextField!
     
     @IBOutlet var reEnterPasswordField: UITextField!
+    
+    @IBOutlet weak var collegeField: UITextField!
+    
+    var ref = FIRDatabase.database().reference()
+
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,12 +59,34 @@ class CreateAccountViewController: UIViewController {
 
             }
             else {
+                if self.nameField.text == "" {
+                    let ac = UIAlertController(title: "Error", message: "Please enter a name", preferredStyle: .Alert)
+                    ac.addAction(UIAlertAction(title: "Okay", style: .Default, handler: nil))
+                    self.presentViewController(ac, animated: true, completion: nil)
+                }
+                if self.collegeField.text == "" {
+                    let ac = UIAlertController(title: "Error", message: "Please enter a college", preferredStyle: .Alert)
+                    ac.addAction(UIAlertAction(title: "Okay", style: .Default, handler: nil))
+                    self.presentViewController(ac, animated: true, completion: nil)
+
+                }
+                
+                if self.passwordField.text != self.reEnterPasswordField.text {
+                    let ac = UIAlertController(title: "Error", message: "passwords do not match", preferredStyle: .Alert)
+                    ac.addAction(UIAlertAction(title: "Okay", style: .Default, handler: nil))
+                    self.presentViewController(ac, animated: true, completion: nil)
+                    
+
+                }
                 if ((self.emailField.text?.hasSuffix(".edu")) == true){
                     FIRAuth.auth()?.currentUser?.sendEmailVerificationWithCompletion({ error in
                         if let error = error {
                             print(error.localizedDescription)
                         }
                         else {
+                            print("im here")
+                            self.getProfileInfo()
+
                             let ac = UIAlertController(title: "Please Verify Email", message: "We need you to verify your email before you can start using BubbleU!", preferredStyle: .Alert)
                             let callActionHandler = { (action: UIAlertAction) -> Void in
                                 let mailURL = NSURL(string: "message://")
@@ -66,7 +96,6 @@ class CreateAccountViewController: UIViewController {
                             }
                             ac.addAction(UIAlertAction(title: "Verify", style: .Default, handler: callActionHandler))
                             self.presentViewController(ac, animated: true, completion: nil)
-                           
                         }
 
                     })
@@ -80,22 +109,22 @@ class CreateAccountViewController: UIViewController {
         })
     }
     
-//    func Login(sender: AnyObject){
-//        FIRAuth.auth()?.signInWithEmail(emailField.text!, password: passwordField.text!, completion: {user, error in
-//            if error != nil{
-//                print("Incorrect")
-//            }
-//            else{
-//                if ((FIRAuth.auth()?.currentUser?.emailVerified) != nil) && ((FIRAuth.auth()?.currentUser?.emailVerified) != false){
-//                    print("Login Successful")
-//                }
-//                else{
-//                    print("Please verify your email")
-//                }
-//            }
-//        })
-//
-//    }
+    
+    func getProfileInfo(){
+        if let user = FIRAuth.auth()?.currentUser {
+            print("am i here yet")
+            print(FIRAuth.auth()?.currentUser)
+            print(user.uid)
+            print(user.email)
+            
+            //nameField.text = user.displayName
+            let changeRequest = user.profileChangeRequest()
+            changeRequest.displayName = self.nameField.text
+            self.ref.child("hmc/user/\(user.uid)/profile/college").setValue(collegeField.text)
+            self.ref.child("hmc/user/\(user.uid)/profile/name").setValue(nameField.text)
 
+            
+        }
+    }
  
 }
