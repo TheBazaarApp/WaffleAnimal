@@ -13,7 +13,7 @@ class Item: NSObject {
     var tags: String
     var itemName: String
     var itemDescription: String
-    var price: String
+    var price: Double
 //  var url: NSURL
     var location: String?
     var sold: Bool?
@@ -21,7 +21,7 @@ class Item: NSObject {
     var seller: String
     var timestamp: String
     
-    init(itemDescription: String, tags: String, itemName: String, price: String, picture: UIImage, seller: String, timestamp: String) {
+    init(itemDescription: String, tags: String, itemName: String, price: Double, picture: UIImage, seller: String, timestamp: String) {
         self.itemDescription = itemDescription
         self.tags = tags
         self.itemName = itemName
@@ -50,7 +50,7 @@ class Item: NSObject {
         return itemDescription
     }
     
-    func getPrice() -> String {
+    func getPrice() -> Double {
         return price
     }
     

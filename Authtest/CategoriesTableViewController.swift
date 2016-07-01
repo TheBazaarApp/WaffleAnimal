@@ -37,7 +37,7 @@ class CategoriesTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 10
+        return 11
     }
     
     
@@ -47,47 +47,52 @@ class CategoriesTableViewController: UITableViewController {
         if indexPath.row == 0 {
             cell.textLabel?.text = "Categories"
         }
+        
         if indexPath.row == 1 {
+            cell.cellButton.setTitle("Album View", forState: .Normal)
+        }
+        
+        if indexPath.row == 2 {
             cell.cellButton.setTitle("All", forState: .Normal)
             //cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
         }
-        if indexPath.row == 2 {
+        if indexPath.row == 3 {
             cell.cellButton.setTitle("Fashion", forState: .Normal)
 //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
         }
-        if indexPath.row == 3 {
+        if indexPath.row == 4 {
             cell.cellButton.setTitle("Electronics", forState: .Normal)
 //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
         }
         
         
-        if indexPath.row == 4 {
+        if indexPath.row == 5 {
             cell.cellButton.setTitle("Appliances", forState: .Normal)
 //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
         }
         
-        if indexPath.row == 5 {
+        if indexPath.row == 6 {
             cell.cellButton.setTitle("Transportation", forState: .Normal)
 //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
         }
         
-        if indexPath.row == 6 {
+        if indexPath.row == 7 {
             cell.cellButton.setTitle("Furniture", forState: .Normal)
 //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
         }
         
-        if indexPath.row == 7 {
+        if indexPath.row == 8 {
             cell.cellButton.setTitle("Books & School Supplies", forState: .Normal)
 //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
         }
         
-        if indexPath.row == 8 {
+        if indexPath.row == 9 {
             cell.cellButton.setTitle("Services", forState: .Normal)
 //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
             
         }
         
-        if indexPath.row == 9 {
+        if indexPath.row == 10 {
             cell.cellButton.setTitle("Other", forState: .Normal)
 //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
         }
@@ -96,65 +101,25 @@ class CategoriesTableViewController: UITableViewController {
         return cell
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        print(true)
-        let Feed: FeedController = segue.destinationViewController.childViewControllers[0].childViewControllers[0] as! FeedController
-        if let cat = sender?.currentTitle {
-            print("category passed on")
-            print(cat)
-            Feed.category = cat!
+    
+    
+    
+    @IBAction func catButtonPushed(sender: AnyObject) {
+        if let cat = sender.currentTitle {
+            if cat == "Album View" {
+                homeController.showAlbums = true
+            }
+            else {
+                homeController.category = cat!.lowercaseString
+                homeController.showAlbums = false
+                homeController.filterByCategory(cat!.lowercaseString)
+            }
+            homeController.menuIsOpen = false 
+            homeController.collectionView!.reloadData()
+            self.revealViewController().revealToggleAnimated(true)
+            }
         }
     }
     
-//    func didTapCategory(button: UIButton) {
-//        performSegueWithIdentifier("categoryid", sender: button)
-//    }
     
-    
-    
-    /*
-     // Override to support conditional editing of the table view.
-     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-     // Return false if you do not want the specified item to be editable.
-     return true
-     }
-     */
-    
-    /*
-     // Override to support editing the table view.
-     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-     if editingStyle == .Delete {
-     // Delete the row from the data source
-     tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-     } else if editingStyle == .Insert {
-     // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-     }
-     }
-     */
-    
-    /*
-     // Override to support rearranging the table view.
-     override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-     
-     }
-     */
-    
-    /*
-     // Override to support conditional rearranging of the table view.
-     override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-     // Return false if you do not want the item to be re-orderable.
-     return true
-     }
-     */
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
-    
-}
+
