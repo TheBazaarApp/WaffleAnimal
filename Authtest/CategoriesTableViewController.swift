@@ -102,6 +102,7 @@ class CategoriesTableViewController: UITableViewController {
         return cell
     }
     
+
     
     
     
@@ -121,6 +122,7 @@ class CategoriesTableViewController: UITableViewController {
         }
     }
 }
+
 
 
 

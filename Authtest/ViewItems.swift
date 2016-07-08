@@ -234,6 +234,7 @@ class ViewItems: UITableViewController {
                 controller.unsold = unsold
                 controller.imageID = picID
                 controller.uid = uid
+                controller.location = "default location"
             }
         }
     }

@@ -23,7 +23,9 @@ class Item: NSObject {
     var uid: String
     var imageKey = ""
     
+
     init(itemDescription: String, tags: String, itemName: String, price: Double, picture: UIImage, seller: String, timestamp: String, uid: String) {
+
         self.itemDescription = itemDescription
         self.tags = tags
         self.itemName = itemName
@@ -57,9 +59,6 @@ class Item: NSObject {
         return price
     }
     
-//    func getUrl() -> NSURL {
-//        return url
-//    }
     
     func getLocation() -> String {
         return location!

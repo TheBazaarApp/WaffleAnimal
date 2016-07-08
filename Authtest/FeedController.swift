@@ -33,7 +33,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var allItems = [Item]()
     var showAlbums = true
     var biggestNumber = 0.0
-    
     @IBOutlet weak var menuButton: UIBarButtonItem!
     
     
@@ -95,6 +94,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     //Call Firebase to get image IDs from database.
     func getRecentItems() {
+        print("getting recent items")
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) { [unowned self] in
             let feed = self.ref.child("\(self.college)/albums").queryLimitedToLast(100)
             self.itemsListener = feed.observeEventType(FIRDataEventType.ChildAdded, withBlock: { (snapshot) in
@@ -267,6 +267,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     
     
+
+    
+    
     //Specify what's in each cell
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
@@ -276,6 +279,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             
             //Create label, which contains seller's name and timestamp
             cell.label.numberOfLines = 2
+            print("before it crashes")
+            print(indexPath.row)
+            print(categoryItems.count)
             cell.currentItem = categoryItems[indexPath.row]
             
             
@@ -420,6 +426,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
+
+    
     
     
     
@@ -550,6 +558,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     
     
+
     
     
 }

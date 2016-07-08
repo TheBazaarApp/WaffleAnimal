@@ -52,6 +52,7 @@ class CloseUp: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("location is \(location!)")
         locationButton.setTitle(location!, forState: .Normal)
         scrollView.contentSize = CGSizeMake(320,600) //At some future date if the constraints aren't still trying to destroy our lives, take this out.
         

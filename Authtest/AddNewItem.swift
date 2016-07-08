@@ -4,7 +4,6 @@
 //
 //  Created by cssummer16 on 6/13/16.
 //  Copyright © 2016 Daksha Agarwal. All rights reserved.
-//
 
 import UIKit
 import Firebase
@@ -351,3 +350,4 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
     
     
 }
+
