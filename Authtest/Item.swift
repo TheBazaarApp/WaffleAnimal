@@ -13,15 +13,17 @@ class Item: NSObject {
     var tags: String
     var itemName: String
     var itemDescription: String
-    var price: String
+    var price: Double
 //  var url: NSURL
     var location: String?
     var sold: Bool?
     var picture: UIImage
     var seller: String
     var timestamp: String
+    var uid: String
+    var imageKey = ""
     
-    init(itemDescription: String, tags: String, itemName: String, price: String, picture: UIImage, seller: String, timestamp: String) {
+    init(itemDescription: String, tags: String, itemName: String, price: Double, picture: UIImage, seller: String, timestamp: String, uid: String) {
         self.itemDescription = itemDescription
         self.tags = tags
         self.itemName = itemName
@@ -29,6 +31,7 @@ class Item: NSObject {
         self.picture = picture
         self.seller = seller
         self.timestamp = timestamp
+        self.uid = uid
     }
     
     func getPicture() -> UIImage {
@@ -50,7 +53,7 @@ class Item: NSObject {
         return itemDescription
     }
     
-    func getPrice() -> String {
+    func getPrice() -> Double {
         return price
     }
     

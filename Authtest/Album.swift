@@ -13,7 +13,8 @@ class Album: NSObject {
     
     var unsoldItems = [Item]()
     var index = 0
-    var albumName = "" 
+    var albumName = ""
+    var albumID = ""
     
     
     func addItem(item: Item){

@@ -12,35 +12,36 @@ import FirebaseStorage
 import FirebaseDatabase
 import Firebase
 
+var homeController: FeedController!
 
 class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     @IBOutlet weak var addItem: UIBarButtonItem!
     let searchController = UISearchController(searchResultsController: nil)
     var categoryItems = [Item]()
-    var category = "All"
+    var category = "all"
     var college = "hmc"
     var ref = FIRDatabase.database().reference()
     let storageRef = FIRStorage.storage().referenceForURL("gs://bubbleu-app.appspot.com")
     var itemsListener: FIRDatabaseHandle?
-    var pictures = [Item]()
+    //    var pictures: [Int]?
     //var albums = [Album]() //maybe make another album class
     var albums = [Int : Album]()
     var index = 0
     var menuIsOpen = false
     var allItems = [Item]()
     var showAlbums = true
-    
-    //    var pictures = [Item(itemDescription: "Bike in good condition!", tags: "Transportation", itemName: "Bike", price: "$25", picture: UIImage(named: "bike")!, seller: "Preethi Seshadri"),
-    //                    Item(itemDescription: "Old iPhone 4", tags: "Electronics", itemName: "iPhone 4", price: "$20", picture: UIImage(named: "iPhone")!, seller: "Matthew Guillory"),
-    //                    Item(itemDescription: "Nice dorm Fridge!", tags: "Appliances", itemName: "Fridge", price: "$30", picture: UIImage(named: "fridge")!, seller: "Colleen Lewis")]
-    
+    var biggestNumber = 0.0
     
     @IBOutlet weak var menuButton: UIBarButtonItem!
     
     override func viewDidLoad() {
+        homeController = self
+        
+        
         print("Feed did load")
         super.viewDidLoad()
+        
         //        self.hideKeyboardWhenTappedAround()
         //navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Bookmarks, target: self, action: #selector(openMenu))
         let button: UIButton = UIButton(type: UIButtonType.Custom)
@@ -78,34 +79,14 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.alwaysBounceVertical = true
         
-        //Reveals categories when you press the menu button
+
         if self.revealViewController() != nil {
-            menuButton.target = self.revealViewController()
+            // menuButton.target = self.revealViewController()
             //menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
-            menuButton.action = #selector(openMenu)
+            // menuButton.action = #selector(openMenu)
             let edgePan = UIScreenEdgePanGestureRecognizer(target:self, action: #selector(screenEdgeSwiped))
             edgePan.edges = .Left
             self.view.addGestureRecognizer(edgePan)
-        }
-        
-        print(" in viewDidLoad")
-        //Load the pictures in the right category(or all of them if category is 'All')
-        categoryItems = allItems.filter { Item in
-            print("inside categoryItems filtering thing")
-            if category == "All" {
-                print("it's all!!!!")
-                return true
-            }
-            else {
-                if Item.getTags() == category {
-                    print("category is right: \(category)")
-                    return true
-                }
-                else {
-                    print("not the right category: \(category)")
-                    return false
-                }
-            }
         }
         
         
@@ -119,11 +100,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
         
     }
-    //    deinit {
-    ////        self.searchController.loadViewIfNeeded()    // iOS 9
-    ////        let _ = self.searchController.view
-    //        self.searchController.view.removeFromSuperview()
-    //    }
+    deinit {
+        //        self.searchController.loadViewIfNeeded()    // iOS 9
+        //        let _ = self.searchController.view
+        self.searchController.view.removeFromSuperview()
+    }
     
     func screenEdgeSwiped(recognizer: UIScreenEdgePanGestureRecognizer) {
         if recognizer.state == .Recognized {
@@ -139,14 +120,17 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         menuIsOpen = !menuIsOpen
     }
     
+    var counter = 0
     
     //Call Firebase to get image IDs from database.
     func getRecentItems() {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) { [unowned self] in
-            let feed = self.ref.child("\(self.college)/albums").queryLimitedToLast(15)
+            let feed = self.ref.child("\(self.college)/albums").queryLimitedToLast(100)
             self.itemsListener = feed.observeEventType(FIRDataEventType.ChildAdded, withBlock: { (snapshot) in
-                
+                print("new child added!")
                 if let allAlbumsDict = snapshot.value as? [String : AnyObject] {
+                    print(snapshot.value)
+                    print("snapshot key is \(snapshot.key)")
                     for (unsoldItems, item) in allAlbumsDict { //Key is album ID, value is all the album info
                         let item = item as! [String : AnyObject]
                         var newAlbum = Album()
@@ -157,19 +141,73 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                             let itemDescription = imageInfo["description"] as! String
                             let itemTag = imageInfo["tag"] as! String
                             let itemName = imageInfo["name"] as! String
-                            let itemPrice = imageInfo["price"] as! String
+                            let itemPrice = (imageInfo["price"]!!).doubleValue
                             let seller = imageInfo["sellerName"] as! String
                             let albumName = imageInfo["albumName"] as! String
                             let timestamp = imageInfo["timestamp"] as! String
+                            let imageKey = imageInfo["imageKey"] as! String
                             newAlbum.albumName = albumName
-                            self.getImage(0, album: newAlbum, imageId: imageID, sellerUID: sellerID, description: itemDescription, tag: itemTag, name: itemName, price: itemPrice, seller: seller, timestamp: timestamp)
+                            newAlbum.albumID = snapshot.key
+                            self.getImage(0, album: newAlbum, imageId: imageKey, sellerUID: sellerID, description: itemDescription, tag: itemTag, name: itemName, price: itemPrice, seller: seller, timestamp: timestamp)
                         }
                     }
                 }
             })
+            
+           let itemsChangedListener = feed.observeEventType(FIRDataEventType.ChildChanged, withBlock: { (snapshot) in
+            let triggerTime = (Int64(NSEC_PER_SEC) * 2)
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
+            print("snapshot value")
+            let albumID = snapshot.key
+            print("album ID is \(albumID)")
+            for album in self.albums.values {
+                print("looping through albums; this album has id \(album.albumID)")
+                if album.albumID == albumID {
+                    print("found a match!")
+                    let unsoldItems = snapshot.value!["unsoldItems"] as! [String : AnyObject]
+                    print("here are the unsold items: \(unsoldItems)")
+                    for newItem in unsoldItems.values {
+                        let imageKey = newItem["imageKey"] as! String
+                        var foundMatch = false
+                        for currItem in album.unsoldItems {
+                            if currItem.imageKey == imageKey {
+                                print("the image keys match!")
+                                currItem.itemDescription = newItem["description"] as! String
+                                 currItem.tags = newItem["tag"] as! String
+                                 currItem.itemName = newItem["name"] as! String
+                                 currItem.price = (newItem["price"]!!).doubleValue
+                                 currItem.timestamp = newItem["timestamp"] as! String
+                                 currItem.imageKey = newItem["imageKey"] as! String
+                                print("it changed something!!!")
+                                foundMatch = true
+                                break
+                            }
+                        }
+                        if (!foundMatch) {
+                            self.counter += 1
+                            print("we're in here \(self.counter) times")
+                            
+                            let sellerID = newItem["sellerId"] as! String
+                            let itemDescription = newItem["description"] as! String
+                            let itemTag = newItem["tag"] as! String
+                            let itemName = newItem["name"] as! String
+                            let itemPrice = (newItem["price"]!!).doubleValue
+                            let seller = newItem["sellerName"] as! String
+                            let timestamp = newItem["timestamp"] as! String
+                            let imageKey = newItem["imageKey"] as! String
+                            self.getImage(0, album: album, imageId: imageKey, sellerUID: sellerID, description: itemDescription, tag: itemTag, name: itemName, price: itemPrice, seller: seller, timestamp: timestamp)
+                        }
+                        
+                    }
+                }
+            }
+                    print(snapshot.value)
+            })
+            })
         }
     }
     
+
     
     
     
@@ -177,13 +215,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     
     
-    
-    
-    func getImage(repetitions: Int, album: Album, imageId: String, sellerUID: String, description: String, tag: String, name: String, price: String, seller: String, timestamp: String){
+    func getImage(repetitions: Int, album: Album, imageId: String, sellerUID: String, description: String, tag: String, name: String, price: Double, seller: String, timestamp: String){
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) { [unowned self] in
             let imageRef = self.storageRef.child("hmc/user/\(sellerUID)/unsoldItems/\(imageId)")
             imageRef.downloadURLWithCompletion{ (URL, error) -> Void in
                 if (error != nil ) {
+                    print("image not found: \(imageId) and \(name)")
+                    print(imageRef)
                     let triggerTime = (Int64(NSEC_PER_SEC) * 1)
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
                         if (repetitions <= 5) {
@@ -191,13 +229,18 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                         }
                     })
                 } else {
+
                     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) { [unowned self] in
+                        print("repetitions is \(repetitions)")
                         if let picData = NSData(contentsOfURL: URL!) { //The pic!!!
                             let image = UIImage(data: picData)!
-                            let newItem = Item(itemDescription: description, tags: tag, itemName: name, price: price, picture: image, seller: seller, timestamp: timestamp)
+                            let newItem = Item(itemDescription: description, tags: tag, itemName: name, price: price, picture: image, seller: seller, timestamp: timestamp, uid: "FAKE USERR CAPSLOCK RULZ")
+                            newItem.imageKey = imageId
                             self.allItems.append(newItem)
                             self.categoryItems.append(newItem)
                             album.addItem(newItem)
+                            print("number of items is \(album.unsoldItems.count)")
+                            print("album name is \(album.albumName)")
                             if album.unsoldItems.count == 1 {
                                 self.albums[album.index] = album
                             }
@@ -207,7 +250,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                         }
                     }
                 }
-            }
+            } 
         }
     }
     
@@ -219,7 +262,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     //How many items are in  displayed in the collection view
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if searchController.active {
+        if searchController.active || showAlbums == false {
             return categoryItems.count
         } else {
             return albums.count
@@ -240,7 +283,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             let image = item?.getPicture()
             let price = item?.getPrice()
             cell.imageView.image = image
-            cell.textView.text = cell.currentAlbum!.albumName + "\n" + price!
+            cell.textView.text = cell.currentAlbum!.albumName + "\n" + String(price!)
         case UISwipeGestureRecognizerDirection.Left:
             if menuIsOpen {
                 revealViewController().revealToggleAnimated(true)
@@ -254,22 +297,59 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 let image = item?.getPicture()
                 let price = item?.getPrice()
                 cell.imageView.image = image
-                cell.textView.text = cell.currentAlbum!.albumName + "\n" + price!
+                cell.textView.text = cell.currentAlbum!.albumName + "\n" + String(price!)
             }
         default:
             print("default")
-            //         }
         }
     }
+    
+    
+    func filterByCategory (category: String) {
+        showAlbums = false
+        self.category = category
+        categoryItems = allItems.filter { Item in
+            if category == "all" {
+                return true
+            }
+            else {
+                if Item.getTags() == category {
+                    return true
+                }
+                else {
+                    return false
+                }
+            }
+        }
+    }
+    
+    func biggestNumber(scope: String) -> Double {
+        
+        if scope == "All" {
+            biggestNumber = 10000000
+        }
+        if scope == "Free" {
+            biggestNumber = 0
+        }
+        if scope == "< $10" {
+            biggestNumber = 10
+        }
+        if scope == "< $25" {
+            biggestNumber = 25
+        }
+        if scope == "< $50" {
+            biggestNumber = 50
+        }
+        return biggestNumber
+    }
+    
     
     //Specify what's in each cell
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Pictures", forIndexPath: indexPath) as! FeedCollectionViewCell
-        print("we created a cell!")
-        
         if searchController.active || showAlbums == false {
-            print("it's alive!!!!!!")
+            
             
             //Create label, which contains seller's name and timestamp
             cell.label.numberOfLines = 2
@@ -290,7 +370,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             cell.textView.backgroundColor = UIColor(red: 244/255, green: 254/255, blue: 193/255, alpha: 1)
             cell.textView.editable = false
             //textView.text = pictures[indexPath.row].getItemDescription() + "\n" + pictures[indexPath.row].getPrice()
-            cell.textView.text = cell.currentItem!.getItemName() + "\n" + cell.currentItem!.getPrice()
+            cell.textView.text = cell.currentItem!.getItemName() + "\n" + String(cell.currentItem!.getPrice())
             cell.textView.font = UIFont.systemFontOfSize(14)
             
             
@@ -306,8 +386,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             
             
         } else {
-            print("it's dead :(")
-            
             
             let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swiped))
             leftSwipe.direction = UISwipeGestureRecognizerDirection.Left
@@ -340,7 +418,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             cell.textView.backgroundColor = UIColor(red: 244/255, green: 254/255, blue: 193/255, alpha: 1)
             cell.textView.editable = false
             //textView.text = pictures[indexPath.row].getItemDescription() + "\n" + pictures[indexPath.row].getPrice()
-            cell.textView.text = currAlbum!.albumName + "\n" + currPic.getPrice()
+            cell.textView.text = currAlbum!.albumName + "\n" + String(currPic.getPrice())
             cell.textView.font = UIFont.systemFontOfSize(14)
             
             
@@ -369,7 +447,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         cell.addConstraintsWithFormat("H:|-4-[v0]|", views: cell.label)
         cell.addConstraintsWithFormat("H:|-4-[v0]|", views: cell.textView)
         cell.addConstraintsWithFormat("H:|[v0]|", views: cell.imageView)
-        cell.addConstraintsWithFormat("V:|[v0]-4-[v1]-4-[v2(300)]-4-|", views: cell.label, cell.textView, cell.imageView)
+        cell.addConstraintsWithFormat("V:|-20-[v0]-4-[v1]-4-[v2(300)]-10-|", views: cell.label, cell.textView, cell.imageView)
         
         return cell
         
@@ -378,7 +456,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     //Specify how large each cell is
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSizeMake(view.frame.width, 390)
+        return CGSizeMake(view.frame.width, 416)
         
     }
     
@@ -390,11 +468,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     
+    
+    
     //When the user searches, make sure the only items displayed are those which match the category & the search term
     func filterContentForSearchText(searchText: String, scope: String = "All") {
-        //categorypics = pictures.filter { Item in
         categoryItems = allItems.filter { Item in
-            let priceMatch = (scope == "All") || (Item.getPrice() == scope)
+            
+            let priceMatch = ((scope == "All") && (category == "all" || Item.getTags() == category)) || (biggestNumber(scope) > Item.getPrice()) //|| (Item.getPrice() == scope)
             if searchText == "" {
                 return priceMatch
             }
@@ -406,14 +486,27 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView!.reloadData()
     }
     
-    //    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    //        if segue.identifier == "Tomessaging" {
-    //            print("true")
-    //            let backButton = UIBarButtonItem()
-    //            backButton.title = "Back"
-    //            navigationItem.leftBarButtonItem = backButton
-    //        }
-    //    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "theWolf" {
+            let cell = sender as! FeedCollectionViewCell
+            let detailView: CloseUp = segue.destinationViewController as! CloseUp
+            //detailView.image = cell.imageView
+            detailView.name = cell.currentItem!.itemName
+            detailView.descript = cell.currentItem?.itemDescription
+            detailView.🔥 = String(cell.currentItem!.price)
+            detailView.uid = cell.currentItem?.uid
+            detailView.location = cell.currentItem?.location
+            detailView.pic = cell.currentItem?.picture
+        }
+    }
+    
+    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        if (!menuIsOpen){
+            performSegueWithIdentifier("theWolf", sender: collectionView.cellForItemAtIndexPath(indexPath))
+        }
+    }
+    
     
     
 }
@@ -432,7 +525,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
 //
 //    override func prepareForReuse() {
 //        super.prepareForReuse()
-//        imageView = nil
+//        imageView = n
 //        nameLabel = nil
 //        textView = nil
 //    }

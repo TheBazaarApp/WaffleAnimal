@@ -51,18 +51,7 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
         view.endEditing(true)
     }
     
-//    func profileInfo() {
-//        if let user = FIRAuth.auth()?.currentUser {
-//            //Get general profile info from database
-//            let dataRef = ref.child("/user/\(user.uid)/profile")
-//            _ = dataRef.observeEventType(FIRDataEventType.Value, withBlock: { (snapshot) in
-//                let data = snapshot.value as? [String : AnyObject]
-//                //self.college.text = data?["college"] as? String
-//                //self.userName = data?["name"] as? String
-//            })
-//        }
-//
-//    }
+
     
     
     
@@ -88,7 +77,7 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
             //Check whether there are unnamed items or items without prices; (*** Maybe later we should also require tag as well)
             var theresAnUnnamedItem = false
             for cell in collectionView.visibleCells() as! [CollectionViewCell] {
-                if (cell.itemName.text == "" || cell.itemPrice.text == "") {
+                if (cell.itemName.text! == "" || cell.itemPrice == nil || cell.itemPrice.text! == "") {
                     theresAnUnnamedItem = true
                     break
                 }
@@ -98,6 +87,8 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
             //If an item or the album are missing a name, show an alert popup.
             if (theresAnUnnamedItem || albumName.text == "") {
                 
+                print("thinks there's an unnamed item")
+                
                 let ac = UIAlertController(title: "Missing Name", message: "You imbecil!  The album and all of the items need names and prices!!!!", preferredStyle: .Alert)
                 ac.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
                 presentViewController(ac, animated: true, completion: nil)
@@ -105,13 +96,16 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                 
                 
                 //If there are no problems, save the items
-                var counter = 0
                 let key = ref.child("\(college)/user/\(uid!)/albums").childByAutoId().key //Generate a unique album ID (***Later, change this to the path which is directly under college (not under user))
-                for cell in collectionView.visibleCells() as! [CollectionViewCell] { //Loop through the cells (each of which represents one item)
+                
+                print("number of cells recognized is \(collectionView.visibleCells().count)")
+               // for cell in collectionView.visibleCells() as! [CollectionViewCell] { //Loop through the cells (each of which represents one item)
+                for item in items {
+                    print("going through the loop :) ")
                     
                     let imageKey = ref.child("\(college)/user/\(uid!)/unsoldItems").childByAutoId().key //Generate a unique album ID
                     
-                    let image = items[counter].getPicture()
+                    let image = item.getPicture()
                     
                     
                     let imageRef = self.storageRef.child(college).child("user").child(self.uid!).child("unsoldItems").child("\(imageKey)")
@@ -126,13 +120,15 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                     }
                     
                     
-                    counter += 1
-                    
                     
                     //Store item details in the database in two different places (by album, and just by image) (*** Maybe one more place as well)
-                    let name = cell.itemName.text! //as NSString
-                    let description = cell.itemDescription.text! //as NSString
-                    let price = cell.itemPrice.text! //as NSString
+//                    let name = cell.itemName.text! //as NSString
+//                    let description = cell.itemDescription.text! //as NSString
+//                    let price = cell.itemPrice.text! //as NSString
+                                        let name = item.itemName //as NSString
+                                        let description = item.itemDescription //as NSString
+                                        let price = item.price //as NSString
+                    
                     let loc = location.text! //as NSString
                     let nameOfAlbum = albumName.text!
                     
@@ -143,6 +139,7 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                     
                     if let user = FIRAuth.auth()?.currentUser {
                         
+                        print("there's a user!  It's \(user)")
                     
                     details = ["price": price,
                                    "description": description,
@@ -151,7 +148,8 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                                    "sellerName": userName!,
                                    "timestamp": timestamp,
                                    "name": name,
-                                    "albumName": nameOfAlbum]
+                                    "albumName": nameOfAlbum,
+                                    "imageKey": imageKey]
                         
                     
                     // (**** Add in item-based album tags)
@@ -159,7 +157,8 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                                        "price": price,
                                        "description": description,
                                        "location": loc,
-                                       "albumName": nameOfAlbum]
+                                       "albumName": nameOfAlbum,
+                                        "imageKey": imageKey]
                     
                     
                     
@@ -169,16 +168,24 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                                        "user": uid! as NSString,
                                        "sellerName": userName!,
                                        "location": loc,
-                                       "albumName": nameOfAlbum]
+                                       "albumName": nameOfAlbum,
+                                        "imageKey": imageKey]
                         
                         }
                     
-                    let childUpdates = ["\(college)/user/\(uid!)/albums/\(key)/unsoldItems/\(imageKey)": details,
-                                        "\(college)/albums/\(key)/unsoldItems/\(imageKey)": details,
-                                        "\(college)/user/\(uid!)/unsoldItems/\(imageKey)": imageDetail,
-                                        "\(college)/unsoldItems/\(imageKey)": imageDetail2]
+                    let imageKey2 = ref.child("\(college)/user/\(uid!)/albums/\(key)/unsoldItems").childByAutoId().key
+                    let imageKey3 = ref.child("\(college)/albums/\(key)/unsoldItems/").childByAutoId().key
+                    let imageKey4 = ref.child("\(college)/unsoldItems/").childByAutoId().key
                     
                     
+                    let childUpdates = ["\(college)/user/\(uid!)/albums/\(key)/unsoldItems/\(imageKey2)": details,
+                                        "\(college)/albums/\(key)/unsoldItems/\(imageKey3)": details,
+                                        "\(college)/user/\(uid!)/unsoldItems/\(imageKey)": details,
+                                        "\(college)/unsoldItems/\(imageKey4)": imageDetail2]
+                    
+                    
+                   print("about to update")
+                    print("important data is \(imageKey) and \(name)")
                     ref.updateChildValues(childUpdates as [NSObject : AnyObject])
                 }
                 
@@ -188,8 +195,8 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                 let details = ["albumName": self.albumName.text!,
                                "location": location.text! as NSString]
                 
-                let childUpdates = ["\(college)/user/\(uid!)/albums/\(key)/albumDetails": details]//,
-                                 //   "\(college)/albums/\(key)/unsoldItems/": ["albumName" : albumName.text!]]
+                let childUpdates = ["\(college)/user/\(uid!)/albums/\(key)/albumDetails":details]
+                
                 
                 ref.updateChildValues(childUpdates as [NSObject : AnyObject]) //(*** Try to do this all in on ref.updateChildValues call so it's all atomic)
                 
@@ -249,7 +256,7 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
             return
         }
         
-        let item = Item(itemDescription: "description", tags: "", itemName: "", price: "", picture: newImage, seller: "", timestamp: "")
+        let item = Item(itemDescription: "description", tags: "", itemName: "", price: -0.1134, picture: newImage, seller: "", timestamp: "", uid: (FIRAuth.auth()?.currentUser?.uid)!)
         items.append(item)
         collectionView.reloadData()
         dismissViewControllerAnimated(true, completion: nil)
@@ -294,7 +301,12 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
         //Fill cell with info
         cell.imageView.image = item.getPicture()
         cell.itemName.text = item.itemName
-        cell.itemPrice.text = item.price
+        if item.price ==  -0.1134 {
+            cell.itemPrice.text = ""
+        } else {
+            cell.itemPrice.text = String(item.price)
+        }
+        
         cell.itemDescription.text = item.itemDescription
         
         return cell
