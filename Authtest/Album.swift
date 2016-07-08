@@ -15,6 +15,9 @@ class Album: NSObject {
     var index = 0
     var albumName = ""
     var albumID = ""
+    var location = ""
+    var locationLat: Double?
+    var locationLong: Double?
     
     
     func addItem(item: Item){

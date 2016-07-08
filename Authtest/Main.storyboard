@@ -335,7 +335,6 @@
                     </tabBar>
                     <connections>
                         <segue destination="uJB-ho-YoC" kind="relationship" relationship="viewControllers" id="tZn-rT-RNV"/>
-                        <segue destination="Y05-Fg-796" kind="relationship" relationship="viewControllers" id="s09-zM-ayP"/>
                         <segue destination="dog-kl-cHK" kind="relationship" relationship="viewControllers" id="nJv-ZJ-sJl"/>
                         <segue destination="kPc-cV-rg6" kind="relationship" relationship="viewControllers" id="VXU-vW-wy4"/>
                     </connections>
@@ -353,10 +352,10 @@
                         <viewControllerLayoutGuide type="bottom" id="uBt-Ec-Hi3"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="D3g-sJ-oNs">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="700"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6ku-yJ-5sC">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6ku-yJ-5sC">
                                 <rect key="frame" x="0.0" y="656" width="320" height="44"/>
                                 <color key="backgroundColor" red="0.9529411793" green="0.61176472900000001" blue="0.070588238540000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -366,39 +365,31 @@
                                 <color key="textColor" red="0.2039215714" green="0.28627452250000002" blue="0.36862745879999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U8M-5j-AkT" customClass="GMSMapView">
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U8M-5j-AkT" customClass="GMSMapView">
                                 <rect key="frame" x="0.0" y="108" width="320" height="547"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eYZ-Fj-WwT">
+                                <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                            </navigationBar>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tNt-Xi-u9E">
                                 <rect key="frame" x="0.0" y="64" width="320" height="44"/>
                                 <items>
                                     <barButtonItem title="Address" id="Wyu-cr-pDT">
                                         <connections>
-                                            <action selector="findAddress:" destination="Y05-Fg-796" id="VDG-3h-j1F"/>
+                                            <action selector="findAddress:" destination="Y05-Fg-796" id="93D-sQ-pU0"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Khq-Up-U5O"/>
-                                    <barButtonItem title="Route" id="7kR-DN-aQD">
+                                    <barButtonItem title="Default Location" id="7kR-DN-aQD">
                                         <connections>
-                                            <action selector="createRoute:" destination="Y05-Fg-796" id="jad-8X-nSl"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem width="25" style="plain" systemItem="fixedSpace" id="d1k-Kq-vIc"/>
-                                    <barButtonItem title="Travel" id="HlR-f1-LRX">
-                                        <connections>
-                                            <action selector="changeTravelMode:" destination="Y05-Fg-796" id="Ng5-sn-8Me"/>
+                                            <action selector="didPressDefaultLocation:" destination="Y05-Fg-796" id="SyU-Ra-b9J"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="vHh-1z-yzs"/>
                                     <barButtonItem title="Map" id="us5-uk-yfT">
                                         <connections>
                                             <action selector="changeMapType:" destination="Y05-Fg-796" id="1oA-f0-wKh"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="save" id="AAc-QW-FFt">
-                                        <connections>
-                                            <action selector="didPressSave:" destination="Y05-Fg-796" id="Vrz-cF-5hw"/>
                                         </connections>
                                     </barButtonItem>
                                 </items>
@@ -423,13 +414,15 @@
                     <tabBarItem key="tabBarItem" title="Local" id="t0q-3N-CSa"/>
                     <connections>
                         <outlet property="bbFindAddress" destination="Wyu-cr-pDT" id="tso-Ej-S9J"/>
+                        <outlet property="defaultLocation" destination="7kR-DN-aQD" id="C92-GB-r3l"/>
                         <outlet property="lblInfo" destination="6ku-yJ-5sC" id="I5i-No-NSO"/>
+                        <outlet property="mapToolbar" destination="tNt-Xi-u9E" id="gPS-x3-tMB"/>
                         <outlet property="viewMap" destination="U8M-5j-AkT" id="Idg-pA-rML"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hHO-Jc-LTG" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="24" y="716"/>
+            <point key="canvasLocation" x="2068" y="1568"/>
         </scene>
         <!--Reveal View Controller-->
         <scene sceneID="cA9-dW-iQD">
@@ -990,22 +983,21 @@
                                     <navigationItem title="Add Album" id="JQU-R3-l6N"/>
                                 </items>
                             </navigationBar>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9L0-Zz-AgW">
-                                <rect key="frame" x="131" y="446" width="59" height="30"/>
-                                <state key="normal" title="Location">
-                                    <color key="titleColor" red="0.4431372549" green="0.66274509800000003" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="pressedLocationButton:" destination="JRe-vM-q5M" eventType="touchUpInside" id="bIR-oP-9js"/>
-                                    <segue destination="Y05-Fg-796" kind="show" id="OOL-Ln-ggp"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No location selected" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Je-XA-bwd">
                                 <rect key="frame" x="82" y="486" width="157" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.4431372549" green="0.66274509800000003" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9L0-Zz-AgW">
+                                <rect key="frame" x="132" y="448" width="59" height="30"/>
+                                <state key="normal" title="Location">
+                                    <color key="titleColor" red="0.4431372549" green="0.66274509800000003" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <segue destination="Y05-Fg-796" kind="show" identifier="aurora" id="OOL-Ln-ggp"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -1072,14 +1064,6 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ppt-nc-0ri">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                         <subviews>
-                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Location" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="qlw-84-VmH">
-                                                <rect key="frame" x="10" y="365" width="300" height="30"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="30" id="wVj-Gq-aii"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Sh7-j3-6fA">
                                                 <rect key="frame" x="10" y="285" width="300" height="30"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -1120,23 +1104,42 @@
                                                     <action selector="profileImage:" destination="PY8-jc-Ajk" eventType="touchUpInside" id="ax6-JD-5SI"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TlU-ly-OxL">
+                                                <rect key="frame" x="8" y="390" width="304" height="30"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="Jvh-7j-TmA"/>
+                                                    <constraint firstAttribute="width" constant="304" id="iBH-ei-uHx"/>
+                                                </constraints>
+                                                <state key="normal" title="Set Default Location"/>
+                                                <connections>
+                                                    <segue destination="Y05-Fg-796" kind="show" identifier="olaf" id="knj-2F-e94"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="no default location set" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uNv-Ek-7Mx">
+                                                <rect key="frame" x="10" y="361" width="300" height="21"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" red="0.95686274510000002" green="0.99607843139999996" blue="0.75686274509999996" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstItem="Sh7-j3-6fA" firstAttribute="top" secondItem="chb-YI-AUe" secondAttribute="bottom" constant="50" id="01Y-QZ-QpR"/>
                                             <constraint firstAttribute="trailing" secondItem="chb-YI-AUe" secondAttribute="trailing" constant="50" id="7M7-oW-oul"/>
                                             <constraint firstItem="dcS-xE-QzF" firstAttribute="leading" secondItem="Sh7-j3-6fA" secondAttribute="leading" id="C9E-6N-2LB"/>
-                                            <constraint firstItem="dcS-xE-QzF" firstAttribute="trailing" secondItem="qlw-84-VmH" secondAttribute="trailing" id="Eud-w2-Sa0"/>
+                                            <constraint firstItem="TlU-ly-OxL" firstAttribute="centerX" secondItem="Ppt-nc-0ri" secondAttribute="centerX" id="D6B-Az-cRr"/>
                                             <constraint firstItem="chb-YI-AUe" firstAttribute="leading" secondItem="Ppt-nc-0ri" secondAttribute="leading" constant="50" id="Lhg-Pk-Bl1"/>
                                             <constraint firstItem="chb-YI-AUe" firstAttribute="top" secondItem="Ppt-nc-0ri" secondAttribute="top" constant="15" id="Mt9-Mi-kzi"/>
+                                            <constraint firstItem="uNv-Ek-7Mx" firstAttribute="trailing" secondItem="dcS-xE-QzF" secondAttribute="trailing" id="RiA-2p-QIP"/>
+                                            <constraint firstItem="uNv-Ek-7Mx" firstAttribute="leading" secondItem="dcS-xE-QzF" secondAttribute="leading" id="SIP-IN-2zZ"/>
                                             <constraint firstItem="dcS-xE-QzF" firstAttribute="trailing" secondItem="Sh7-j3-6fA" secondAttribute="trailing" id="YZq-GJ-pnD"/>
-                                            <constraint firstItem="dcS-xE-QzF" firstAttribute="leading" secondItem="qlw-84-VmH" secondAttribute="leading" id="b9v-sH-DhI"/>
+                                            <constraint firstItem="TlU-ly-OxL" firstAttribute="top" secondItem="uNv-Ek-7Mx" secondAttribute="bottom" constant="8" id="Z7F-Pj-zzp"/>
                                             <constraint firstItem="chb-YI-AUe" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Ppt-nc-0ri" secondAttribute="top" id="inM-wU-vBY"/>
                                             <constraint firstItem="Sh7-j3-6fA" firstAttribute="leading" secondItem="Ppt-nc-0ri" secondAttribute="leading" constant="10" id="kDs-NA-fXB"/>
+                                            <constraint firstItem="uNv-Ek-7Mx" firstAttribute="top" secondItem="dcS-xE-QzF" secondAttribute="bottom" constant="6" id="m7B-3I-ZJ6"/>
                                             <constraint firstAttribute="height" constant="504" id="q0l-Cb-9C9"/>
                                             <constraint firstAttribute="height" constant="504" id="s1v-Pp-Or8"/>
                                             <constraint firstItem="dcS-xE-QzF" firstAttribute="top" secondItem="Sh7-j3-6fA" secondAttribute="bottom" constant="10" id="u82-J0-z0x"/>
-                                            <constraint firstItem="qlw-84-VmH" firstAttribute="top" secondItem="dcS-xE-QzF" secondAttribute="bottom" constant="10" id="vmO-JA-CoB"/>
                                             <constraint firstAttribute="trailing" secondItem="Sh7-j3-6fA" secondAttribute="trailing" constant="10" id="wEP-51-dIC"/>
                                         </constraints>
                                         <variation key="default">
@@ -1213,7 +1216,7 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="568"/>
                     <connections>
-                        <outlet property="location" destination="qlw-84-VmH" id="g1f-Gz-BLh"/>
+                        <outlet property="locationLabel" destination="uNv-Ek-7Mx" id="Gre-PO-3AX"/>
                         <outlet property="name" destination="Sh7-j3-6fA" id="NLx-0Y-fLg"/>
                         <outlet property="profileImage" destination="chb-YI-AUe" id="jcE-4z-CTg"/>
                         <outlet property="university" destination="dcS-xE-QzF" id="uR1-O2-seu"/>
@@ -1609,6 +1612,9 @@
                                         <state key="normal" title="Location">
                                             <color key="titleColor" red="0.44313725490196076" green="0.66274509803921566" blue="0.96862745098039216" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
+                                        <connections>
+                                            <segue destination="Y05-Fg-796" kind="show" identifier="simba" id="uZ2-Ld-q6W"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.65490196079999996" green="1" blue="0.64313725489999995" alpha="1" colorSpace="calibratedRGB"/>
@@ -1748,7 +1754,6 @@
                         <outlet property="locationButton" destination="fMo-qA-52W" id="d1W-jo-Pwk"/>
                         <outlet property="price" destination="lk2-OZ-EGS" id="sOF-my-bSZ"/>
                         <outlet property="scrollView" destination="lCF-eQ-Kkw" id="XKq-1Q-3Qa"/>
-                        <segue destination="Y05-Fg-796" kind="show" identifier="simba" id="ja8-uO-b9g"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YB1-RI-Elx" sceneMemberID="firstResponder"/>
@@ -1764,13 +1769,13 @@
         <image name="water-lily-1442497_1920.jpg" width="1920" height="1245"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="5eR-YR-Ea5"/>
-        <segue reference="v2q-JC-IFk"/>
         <segue reference="8pk-dR-AmK"/>
+        <segue reference="v2q-JC-IFk"/>
         <segue reference="jrS-Mf-al4"/>
         <segue reference="AXq-th-8w3"/>
-        <segue reference="ja8-uO-b9g"/>
         <segue reference="kPb-6Q-qX6"/>
+        <segue reference="5eR-YR-Ea5"/>
+        <segue reference="OOL-Ln-ggp"/>
         <segue reference="ETf-D6-J96"/>
     </inferredMetricsTieBreakers>
 </document>

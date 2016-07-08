@@ -17,12 +17,16 @@ class FeedCollectionViewCell: UICollectionViewCell {
     let label = UILabel()
     let textView = UITextView()
     let imageView = UIImageView()
+    //Editted for segue
+//    var button = UIButton()
+//    var uid: String
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.contentView.addSubview(label)
         self.contentView.addSubview(textView)
         self.contentView.addSubview(imageView)
+//        self.contentView.addSubview(button)
     }
     
     required init?(coder aDecoder: NSCoder) {

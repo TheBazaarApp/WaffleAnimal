@@ -24,7 +24,7 @@ class CreateAccountViewController: UIViewController {
     
     var ref = FIRDatabase.database().reference()
 
-    
+    let college = "hmc"
     
     
     override func viewDidLoad() {
@@ -121,14 +121,14 @@ class CreateAccountViewController: UIViewController {
             let changeRequest = user.profileChangeRequest()
             changeRequest.displayName = self.nameField.text
             changeRequest.commitChangesWithCompletion { error in
-                if let error = error {
+                if error != nil {
                     print("an error happened!")
                 } else {
                     print("whatever")
                 }
             }
-            self.ref.child("hmc/user/\(user.uid)/profile/college").setValue(collegeField.text)
-            self.ref.child("hmc/user/\(user.uid)/profile/name").setValue(nameField.text)
+            self.ref.child("\(self.college)/user/\(user.uid)/profile/college").setValue(collegeField.text)
+            self.ref.child("\(self.college)/user/\(user.uid)/profile/name").setValue(nameField.text)
 
             
         }

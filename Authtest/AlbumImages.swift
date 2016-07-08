@@ -27,6 +27,7 @@ class AlbumImages: UITableViewController {
     var itemsListener: FIRDatabaseHandle?
     var thisIsAnnoying = false
     var count = 0
+    let college = "hmc"
 
     
     
@@ -100,7 +101,7 @@ class AlbumImages: UITableViewController {
         if let user = FIRAuth.auth()?.currentUser {
             //Get items from the database and storage
             var imageRef: FIRDatabaseReference
-            imageRef = self.ref.child("/user/\(user.uid)/albums/\(self.albumID!)")
+            imageRef = self.ref.child("\(self.college)/user/\(user.uid)/albums/\(self.albumID!)")
             self.itemsListener = imageRef.observeEventType(FIRDataEventType.Value, withBlock: { (snapshot) in
                 
                 if let allItemsDict = snapshot.value as? [String : AnyObject] {
@@ -137,7 +138,7 @@ class AlbumImages: UITableViewController {
         //Loop through image IDs, get them from storage, add them in
         for i in 0...(self.displayedID.count - 1) {
             let imageRef: FIRStorageReference
-            imageRef = self.storageRef.child("users/\(self.uid!)/unsoldItems/\(self.displayedID[i])") //Path to the image in stoage
+            imageRef = self.storageRef.child("\(self.college)/user/\(self.uid!)/unsoldItems/\(self.displayedID[i])") //Path to the image in stoage
             imageRef.downloadURLWithCompletion{ (URL, error) -> Void in  //Download the image
                 if (error != nil) {
                     print("error!!!")

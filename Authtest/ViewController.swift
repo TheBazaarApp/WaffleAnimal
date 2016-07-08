@@ -19,7 +19,7 @@ class ViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
        super.viewWillAppear(animated)
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
-            if let user = user {
+            if user != nil {
                 self.performSegueWithIdentifier("SWRevealViewController", sender: nil)
             }
         }

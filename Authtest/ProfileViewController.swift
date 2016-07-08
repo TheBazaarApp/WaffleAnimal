@@ -20,7 +20,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     @IBOutlet weak var unsoldImage3: UIImageView!
     @IBOutlet weak var name: UILabel!
     @IBOutlet weak var profilePic: UIImageView!
-    @IBOutlet weak var college: UILabel!
+    @IBOutlet weak var university: UILabel!
     
     
     @IBAction func logOut(sender: AnyObject) {
@@ -45,7 +45,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     var uid: String?
     var profileDetails: FIRDatabaseHandle?
     
-    
+    let college = "hmc"
     
     override func viewDidLoad() {
         print("profile did load")
@@ -56,6 +56,8 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: #selector(goToEditProfile)) //Edit profile button
         self.navigationItem.setHidesBackButton(true, animated: true) //Hide back button
         getProfileInfo()
+        self.profilePic.layer.cornerRadius = self.profilePic.frame.size.width / 2
+        self.profilePic.clipsToBounds = true 
         
     }
     
@@ -85,7 +87,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     //Gets profile pic from database and displays it
     func getProfilePic() {
         if let user = FIRAuth.auth()?.currentUser {
-            let imageRef = storageRef.child("ProfilePics/\(user.uid)")
+            let imageRef = storageRef.child("\(self.college)/user/\(user.uid)/ProfilePics")
             imageRef.downloadURLWithCompletion{ (URL, error) -> Void in
                 if (error != nil) {
                     print ("ERROR LOADING PIC 2!!!")
@@ -107,10 +109,10 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     func getNormalProfileInfo() {
         if let user = FIRAuth.auth()?.currentUser {
             //Get general profile info from database
-            let dataRef = ref.child("hmc/user/\(user.uid)/profile")
+            let dataRef = ref.child("\(self.college)/user/\(user.uid)/profile")
             _ = dataRef.observeEventType(FIRDataEventType.Value, withBlock: { (snapshot) in
                 let data = snapshot.value as? [String : AnyObject]
-                self.college.text = data?["college"] as? String
+                self.university.text = data?["college"] as? String
                 self.name.text = data?["name"] as? String
             })
         }
@@ -131,7 +133,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
         if let user = FIRAuth.auth()?.currentUser {
             
             //Get unsold items from the database and storage
-            let imageRef = ref.child("hmc/user/\(user.uid)/unsoldItems")
+            let imageRef = ref.child("\(self.college)/user/\(user.uid)/unsoldItems")
             _ = imageRef.observeSingleEventOfType(FIRDataEventType.Value, withBlock: { (snapshot) in
                 
                 if let allItems = snapshot.value as? [String : AnyObject] {
@@ -162,7 +164,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     func showUnsold(){
         let imageViews = [unsoldImage1, unsoldImage2, unsoldImage3]
         for i in 0...(displayedUnsold.count - 1) {
-            let imageRef = storageRef.child("hmc/user/\(uid!)/unsoldItems/\(displayedUnsold[i])") //Path to the image in stoage
+            let imageRef = storageRef.child("\(self.college)/user/\(uid!)/unsoldItems/\(displayedUnsold[i])") //Path to the image in stoage
             imageRef.downloadURLWithCompletion{ (URL, error) -> Void in  //Download the image
                 if (error != nil) {
                     print("displayedID")

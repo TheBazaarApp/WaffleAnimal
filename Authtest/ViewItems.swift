@@ -28,7 +28,9 @@ class ViewItems: UITableViewController {
     var thisIsAnnoying = false
     var count = 0
     var itemsListener: FIRDatabaseHandle?
-    
+    let college = "hmc"
+    var seller: String?
+    var selleruid: String?
     
     
     override func viewDidLoad() {
@@ -115,9 +117,9 @@ class ViewItems: UITableViewController {
                 //Get items from the database and storage
                 var imageRef: FIRDatabaseReference
                 if unsold {
-                    imageRef = self.ref.child("/user/\(user.uid)/unsoldItems")
+                    imageRef = self.ref.child("\(self.college)/user/\(user.uid)/unsoldItems")
                 } else {
-                    imageRef = self.ref.child("/user/\(user.uid)/soldItems")
+                    imageRef = self.ref.child("\(self.college)/user/\(user.uid)/soldItems")
                 }
                 
                 self.itemsListener = imageRef.observeEventType(FIRDataEventType.Value, withBlock: { (snapshot) in
@@ -152,9 +154,9 @@ class ViewItems: UITableViewController {
         for i in 0...(self.displayedID.count - 1) {
             let imageRef: FIRStorageReference
             if self.unsold {
-                imageRef = self.storageRef.child("users/\(self.uid!)/unsoldItems/\(self.displayedID[i])") //Path to the image in stoage
+                imageRef = self.storageRef.child("\(self.college)/user/\(self.uid!)/unsoldItems/\(self.displayedID[i])") //Path to the image in stoage
             } else {
-                imageRef = self.storageRef.child("users/\(self.uid!)/soldItems/\(self.displayedID[i])") //Path to the image in stoage
+                imageRef = self.storageRef.child("\(self.college)/user/\(self.uid!)/soldItems/\(self.displayedID[i])") //Path to the image in stoage
             }
             
             imageRef.downloadURLWithCompletion{ (URL, error) -> Void in  //Download the image
@@ -227,10 +229,11 @@ class ViewItems: UITableViewController {
                 
                 //Send image name, image, ID, and sold status to the next view controller
                 let controller = segue.destinationViewController  as! CloseUp
-                controller.imageName = picName
+                controller.name = picName
                 controller.pic = pic
                 controller.unsold = unsold
                 controller.imageID = picID
+                controller.uid = uid
             }
         }
     }

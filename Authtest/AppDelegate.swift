@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     override init() {
         FIRApp.configure()
-        GMSServices.provideAPIKey("AIzaSyDPjBtSHisMNcvreibxwy1VRCEWh8HL3zI")
+        GMSServices.provideAPIKey("AIzaSyCPYSYVpF0ruyvsMS4Au8-NB3fDaqrIHmc")
     }
     
 //

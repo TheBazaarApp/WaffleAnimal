@@ -28,7 +28,7 @@ class ViewAlbum: UITableViewController {
     var albumsListener: FIRDatabaseHandle?
     var thisIsAnnoying = false
     var count = 0
-
+    let college = "hmc"
     
     
     
@@ -120,7 +120,7 @@ class ViewAlbum: UITableViewController {
             
             //Get reference to album cover pic from database
             var imageRef: FIRDatabaseReference
-            imageRef = self.ref.child("/user/\(user.uid)/albums")
+            imageRef = self.ref.child("\(self.college)/user/\(user.uid)/albums")
             self.albumsListener = imageRef.observeEventType(FIRDataEventType.Value, withBlock: { (snapshot) in
                 
                 
@@ -163,7 +163,7 @@ class ViewAlbum: UITableViewController {
         for i in 0...(self.idArray.count - 1) {
             let imageRef: FIRStorageReference
             
-            imageRef = self.storageRef.child("users/\(self.uid!)/unsoldItems/\(self.idArray[i])") //Path to the image in stoage
+            imageRef = self.storageRef.child("\(self.college)/user/\(self.uid!)/unsoldItems/\(self.idArray[i])") //Path to the image in stoage
             
             imageRef.downloadURLWithCompletion{ (URL, error) -> Void in  //Download the image
                 if (error != nil) {

@@ -1,24 +1,24 @@
 /*
-* Copyright (c) 2015 Razeware LLC
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-*/
+ * Copyright (c) 2015 Razeware LLC
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 import UIKit
 import Firebase
@@ -29,15 +29,17 @@ class ChatViewController: JSQMessagesViewController {
     var messages: [JSQMessage] = []
     var outgoingBubbleImageView: JSQMessagesBubbleImage!
     var incomingBubbleImageView: JSQMessagesBubbleImage!
-    
+    var receiveruid: String = ""
     let rootRef = FIRDatabase.database().referenceFromURL("https://bubbleu-app.firebaseio.com")
     var messageRef: FIRDatabaseReference!
+    var receiver: String = ""
     var userIsTypingRef: FIRDatabaseReference!
     
     var usersTypingQuery: FIRDatabaseQuery!
     
     private var localTyping = false
     var isTyping: Bool {
+        
         get {
             return localTyping
         }
@@ -48,24 +50,30 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     override func viewDidLoad() {
+        print("receiver uid")
+        print(receiveruid)
         super.viewDidLoad()
-        title = "Messaging"
+        title = receiver
         senderId = FIRAuth.auth()?.currentUser?.uid
-        senderDisplayName = FIRAuth.auth()?.currentUser?.displayName ?? ""
+        senderDisplayName = FIRAuth.auth()!.currentUser!.displayName ?? "" as String
+        print("sender ID")
+        print(senderId)
+        print("Sender display name")
+        print(senderDisplayName)
         setupBubbles()
         // No avatars!
         collectionView.collectionViewLayout.incomingAvatarViewSize = CGSize.zero
         collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSize.zero
         //tabBarController?.tabBar.hidden = true
-        messageRef = rootRef.child("messages")
         self.hideKeyboardWhenTappedAround()
         //self.navigationController?.navigationBar.hidden = false
+        
     }
     
-//    func popToRoot() {
-//        //print("true")
-//        
-//    }
+    //    func popToRoot() {
+    //        //print("true")
+    //
+    //    }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
@@ -112,12 +120,35 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
-        let itemRef = messageRef.childByAutoId()
+        let itemRefSender = rootRef.child("hmc/user/\(FIRAuth.auth()!.currentUser!.uid)/messages/all/\(receiveruid)").childByAutoId()
+        let itemRefReceiver = rootRef.child("hmc/user/\(receiveruid)/messages/all/\(self.senderId)").childByAutoId()
+        let recentsSender = rootRef.child("hmc/user/\(FIRAuth.auth()!.currentUser!.uid)/messages/recents/\(receiveruid)")
+        let recentsReceiver = rootRef.child("hmc/user/\(receiveruid)/messages/recents/\(self.senderId)")
+        print(senderDisplayName)
+        let date = NSDate()
+
+        let formatter = NSDateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss ZZZ"
+
+        formatter.timeZone = NSTimeZone(abbreviation: "UTC")
+        let utcTimeZoneStr = formatter.stringFromDate(date)
+
         let messageItem = [
             "text": text,
             "senderId": senderId
         ]
-        itemRef.setValue(messageItem)
+        let messageName = [
+            "name": receiver,
+            "timestamp": utcTimeZoneStr
+        ]
+        let senderName = [
+            "name": senderDisplayName,
+            "timestamp": utcTimeZoneStr
+        ]
+        itemRefSender.setValue(messageItem)
+        itemRefReceiver.setValue(messageItem)
+        recentsSender.setValue(messageName)
+        recentsReceiver.setValue(senderName)
         
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
         
@@ -137,14 +168,30 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     private func observeMessages() {
-        let messagesQuery = messageRef.queryLimitedToLast(25)
+        let messagesQuerySender = rootRef.child("hmc/user/\(FIRAuth.auth()!.currentUser!.uid)/messages/all/\(receiveruid)").queryLimitedToLast(25)
+//        let messagesQueryReceiver = rootRef.child("hmc/user/\(receiveruid)/messages/all/\(self.senderId)")
         
-        messagesQuery.observeEventType(.ChildAdded, withBlock: { snapshot in
+        print("sender ID")
+        print(senderId)
+        
+        messagesQuerySender.observeEventType(.ChildAdded, withBlock: { snapshot in
             let id = snapshot.value!["senderId"] as! String
             let text = snapshot.value!["text"] as! String
             self.addMessage(id, text: text)
             self.finishReceivingMessage()
+        
         })
+        
+//        messagesQueryReceiver.observeEventType(.ChildAdded, withBlock: { snapshot in
+//            let id = snapshot.value!["receiveruid"] as! String
+//            let text = snapshot.value!["text"] as! String
+//            self.addMessage(id, text: text)
+//            self.finishReceivingMessage()
+//            
+//
+//        })
+    
+    
     }
     
     private func observeTyping() {
@@ -164,7 +211,7 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     func addMessage(id: String, text: String) {
-        let message = JSQMessage(senderId: id, displayName: "", text: text)
+        let message = JSQMessage(senderId: id, displayName: self.senderDisplayName, text: text)
         messages.append(message)
     }
     
