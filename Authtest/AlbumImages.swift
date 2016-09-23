@@ -9,164 +9,92 @@
 import UIKit
 import Firebase
 
-class AlbumImages: UITableViewController {
+class AlbumImages: ItemTableViewController {
     
-    @IBOutlet var myTableView: UITableView!
-    
-    var ref = FIRDatabase.database().reference() //create database reference
-    let storageRef = FIRStorage.storage().referenceForURL("gs://bubbleu-app.appspot.com") //create storage reference
-    var uid: String?
-    
-    var namesOfPics = [String]()
-    var displayedID = [String]()
-    var actualImages = [UIImage]()
-    let searchController = UISearchController(searchResultsController: nil)
-    var filteredNames = [String]()
     var albumName: String?
     var albumID: String?
-    var itemsListener: FIRDatabaseHandle?
-    var thisIsAnnoying = false
-    var count = 0
-    let college = "hmc"
-
     
-    
+    //MARK: SETUP FUNCTIONS
     
     override func viewDidLoad() {
         super.viewDidLoad()
         let user = FIRAuth.auth()?.currentUser
         uid = user!.uid
-        
-        //Set up search bar in the header
-        searchController.searchResultsUpdater = self
-        searchController.dimsBackgroundDuringPresentation = false
-        definesPresentationContext = true
-        tableView.tableHeaderView = searchController.searchBar
-        
-        getItemsForSale()
-        
+        navigationItem.title = "Items in \(albumName!)"
+        let path = "\(college)/user/\(uid!)/albums/\(albumID!)/unsoldItems"
+        childAddedListener(path)
+        childChangedListener(path)
+        childRemovedListener(path)
+    }
+    
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        performSegueWithIdentifier("redRidingHood", sender: nil)
     }
     
     
     
     
-    //////////////////////////////////// TableView Functions ///////////////////////////////////
     
-    
-    //Specifies how many items there will be in the table
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if searchController.active && searchController.searchBar.text != "" {
-            return filteredNames.count
-        }
-        //return namesOfPics.count
-        if thisIsAnnoying {
-            count += 1
-            
-        }
-        return count
-
-    }
-    
-    
-    //Specify what is in each cell
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: ViewItemsCell = self.tableView.dequeueReusableCellWithIdentifier("genie") as! ViewItemsCell
-        
-        let itemName: String
-        if searchController.active && searchController.searchBar.text != "" { //Filter is active; display only filtered stuff
-            itemName = filteredNames[indexPath.row]
-            let indexOfFilter = namesOfPics.indexOf(itemName)
-            let filterImage = actualImages[indexOfFilter!]
-            cell.itemImage.image = filterImage
-            
-        } else {  //Filter is inacctive, display pic. as usual
-            itemName = namesOfPics[indexPath.row]
-            var item: UIImage?
-            item = actualImages[indexPath.row]
-            cell.albumItem.image = item
-            
-        }
-        
-        cell.albumItemLabel.text = itemName
-        return cell
-    }
-    
-    
-    
-    
-    //Access the storage and the database to get personal info, the profile pic, and the sold and unsold items
-    func getItemsForSale(){
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) { [unowned self] in
-
-        if let user = FIRAuth.auth()?.currentUser {
-            //Get items from the database and storage
-            var imageRef: FIRDatabaseReference
-            imageRef = self.ref.child("\(self.college)/user/\(user.uid)/albums/\(self.albumID!)")
-            self.itemsListener = imageRef.observeEventType(FIRDataEventType.Value, withBlock: { (snapshot) in
-                
-                if let allItemsDict = snapshot.value as? [String : AnyObject] {
-                    let unsoldItemsDict = allItemsDict["unsoldItems"] as! [String: AnyObject]
-                    let unsoldImageIDs = Array(unsoldItemsDict.keys)
-                    for id in unsoldImageIDs {
-                        let imageInfo = unsoldItemsDict[id]
-                        let imageName = imageInfo!["name"] as! String
-                        self.displayedID.append(id)
-                        self.namesOfPics.append(imageName)
-                    }
-                    self.getActualImages()
-                }
-            })
-            
-        }
+    override func formatCell(cell: ViewItemsCell, item: Item) {
+        if item.tag == "In Search Of" {
+            if item.hasPic {
+                cell.albumImagesISOPicImage.image = item.picture
+                cell.albumImagesISOPicLabel.numberOfLines = 80
+                cell.albumImagesISOPicLabel.text = item.itemName + "\n \n" + item.itemDescription
+            } else {
+                cell.albumImagesISOLabel.numberOfLines = 80
+                cell.albumImagesISOLabel.text = item.itemName + "\n \n" + item.itemDescription
+            }
+        } else {
+            cell.albumItemLabel.text = item.itemName
+            cell.albumItemImage.image = item.picture
         }
     }
     
     
     
     
-    // Access storage to get images
-    func getActualImages(){
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) { [unowned self] in
-
-//        //Put the default image in the array enough times that the array has enough spots to accomodate the images we're going to add
-//        let dummyImage = UIImage(named: "PrettySunset.jpg")
-//        for _ in 0...(self.displayedID.count - 1) {
-//            self.actualImages.append(dummyImage!)
-//        }
-        
-        
-        //Loop through image IDs, get them from storage, add them in
-        for i in 0...(self.displayedID.count - 1) {
-            let imageRef: FIRStorageReference
-            imageRef = self.storageRef.child("\(self.college)/user/\(self.uid!)/unsoldItems/\(self.displayedID[i])") //Path to the image in stoage
-            imageRef.downloadURLWithCompletion{ (URL, error) -> Void in  //Download the image
-                if (error != nil) {
-                    print("error!!!")
-                } else {
-                    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) { [unowned self] in
-
-                    if let picData = NSData(contentsOfURL: URL!) { //The pic!!!
-                        let image = UIImage(data: picData)!
-                        self.actualImages.append(image)
-                        //self.myTableView.reloadData()
-                        self.thisIsAnnoying = true
-                        let num = self.actualImages.count
-                        dispatch_async(dispatch_get_main_queue()) { [unowned self] in
-                            self.myTableView.beginUpdates()
-                            let newNSIndexPath = NSIndexPath(forItem: num-1, inSection: 0)
-                            self.myTableView.insertRowsAtIndexPaths([newNSIndexPath], withRowAnimation: .None)
-                            self.myTableView.endUpdates()
-                        }
-
-                    }
-                }
-                }
+    override func childAddedDetails(newItem: Item, snapshot: FIRDataSnapshot) {
+        newItem.imageKey = snapshot.key
+        let itemInfoDict = snapshot.value as? [String : AnyObject]
+        newItem.tag = itemInfoDict!["tag"] as! String
+        newItem.itemName = itemInfoDict!["name"] as! String
+        newItem.itemDescription = itemInfoDict!["description"] as! String
+        newItem.sellerCollege = mainClass.domainBranch
+        newItem.uid = mainClass.uid
+        if newItem.tag == "In Search Of" {
+            if (itemInfoDict!["hasPic"] as? Bool) != nil {
+                newItem.hasPic = false
             }
         }
+    }
+    
+    
+    
+    
+    override func childChangedDetails(snapshot: FIRDataSnapshot) {
+        let imageKey = snapshot.key
+        let itemInfoDict = snapshot.value as? [String : AnyObject]
+        
+        let name = itemInfoDict!["name"] as! String
+        let tag = itemInfoDict!["tag"] as! String
+        for item in self.items.values {
+            if item.imageKey == imageKey { //We found a matching item!
+                item.itemName = name
+                item.tag = tag
+                item.itemDescription = itemInfoDict!["description"] as! String
+            }
         }
     }
     
-    //////////////////////////////////// Navigation Function ///////////////////////////////////
+    
+    
+    
+    
+    
+    
+    //NAVIGATION FUNCTIONS
     
     
     //Go to other view controllers
@@ -174,66 +102,35 @@ class AlbumImages: UITableViewController {
         
         if segue.identifier == "redRidingHood" { //Called when you click on one item
             if let indexPath = self.tableView.indexPathForSelectedRow {
-                var pic: UIImage
-                var picName: String
-                var picID: String
-                picID = displayedID[indexPath.row]
-                picName = namesOfPics[indexPath.row]
-                pic = actualImages[indexPath.row]
-                if searchController.active && searchController.searchBar.text != "" {
-                    picName = filteredNames[indexPath.row]
-                    let indexOfFilter = namesOfPics.indexOf(picName)
-                    pic = actualImages[indexOfFilter!]
-                    picID = displayedID[indexOfFilter!]
+                let cell = tableView.cellForRowAtIndexPath(indexPath) as! ViewItemsCell
+                tableView.deselectRowAtIndexPath(indexPath, animated: true)
+                let itemKey = items.keys.sort()[indexPath.row]
+                var item = items[itemKey]!
+                if searchBarActive && searchBar!.text != "" {
+                    item = filteredItems[indexPath.row]
+                }
+                
+                if item.tag == "In Search Of" {
+                    if item.hasPic {
+                        cell.albumImagesISOPicBackground.backgroundColor = mainClass.ourBlue
+                    } else {
+                        cell.albumImagesISOBackground.backgroundColor = mainClass.ourBlue
+                    }
+                } else {
+                    cell.albumItemLabel.backgroundColor = mainClass.ourBlue
                 }
                 
                 //Pass info to next ViewController
                 let controller = segue.destinationViewController  as! CloseUp
-                controller.imageName = picName
-                controller.pic = pic
-                controller.imageID = picID
+                controller.name = item.itemName
+                controller.pic = item.picture
+                controller.imageID = item.imageKey
+                controller.sellerUID = uid
+                controller.sellerCollege = college
+                controller.albumID = albumID
+                controller.location = "default location"
             }
         }
-        
-        
-    }
-    
-    
-    
-    
-    
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        ref.removeObserverWithHandle(itemsListener!)
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    //////////////////////////////////// Filtering Functions ///////////////////////////////////
-    
-    
-    //When you're searching, filter results in tableview
-    func filterContentForSearchText(searchText: String, scope: String = "AllImages") {
-        filteredNames = namesOfPics.filter { filter in
-            return filter.lowercaseString.containsString(searchText.lowercaseString)
-        }
-        
-        tableView.reloadData()
-    }
-    
-    
-}
-
-
-
-extension AlbumImages: UISearchResultsUpdating {
-    func updateSearchResultsForSearchController(searchController: UISearchController) {
-        filterContentForSearchText(searchController.searchBar.text!)
     }
     
 }

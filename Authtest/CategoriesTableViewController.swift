@@ -12,24 +12,20 @@ class CategoriesTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.hideKeyboardWhenTappedAround()
+        
         self.hideKeyboardWhenTappedAround()
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
         
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        
-        
-        
+        self.view.backgroundColor = UIColor(red: 37/255, green: 137/255, blue: 189/255, alpha: 1.0)
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
-    // MARK: - Table view data source
+    
+    
+    // MARK: TABLEVIEW FUNCTIONS
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
@@ -38,89 +34,118 @@ class CategoriesTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 11
+        return 12
     }
     
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! CategoryCellWithButton
-        
+        //CGRect(x: 0.0, y: 0.0, width: self.view.frame.size.width, height: self.view.frame.size.height)
         if indexPath.row == 0 {
+            cell.cellButton.enabled = false
             cell.textLabel?.text = "Categories"
+            cell.textLabel?.backgroundColor = UIColor(red: 37/255, green: 137/255, blue: 189/255, alpha: 1.0)
+            cell.textLabel!.textColor = UIColor.whiteColor()
         }
         
         if indexPath.row == 1 {
             cell.cellButton.setTitle("Album View", forState: .Normal)
+            cell.cellButton.contentHorizontalAlignment = .Left
+            cell.cellButton.backgroundColor = UIColor.clearColor()
+            cell.cellButton.titleLabel?.textColor = UIColor.whiteColor()
         }
-        
         if indexPath.row == 2 {
-            cell.cellButton.setTitle("All", forState: .Normal)
-            //cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
+            cell.cellButton.setTitle("All Items", forState: .Normal)
+            cell.cellButton.contentHorizontalAlignment = .Left
+            cell.cellButton.backgroundColor = UIColor.clearColor()
+            cell.cellButton.titleLabel?.textColor = UIColor.whiteColor()
         }
         if indexPath.row == 3 {
             cell.cellButton.setTitle("Fashion", forState: .Normal)
-            //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
+            cell.cellButton.contentHorizontalAlignment = .Left
+            cell.cellButton.backgroundColor = UIColor.clearColor()
+            cell.cellButton.titleLabel?.textColor = UIColor.whiteColor()
         }
         if indexPath.row == 4 {
             cell.cellButton.setTitle("Electronics", forState: .Normal)
-            //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
+            cell.cellButton.contentHorizontalAlignment = .Left
+            cell.cellButton.backgroundColor = UIColor.clearColor()
+            cell.cellButton.titleLabel?.textColor = UIColor.whiteColor()
         }
-        
         
         if indexPath.row == 5 {
             cell.cellButton.setTitle("Appliances", forState: .Normal)
-            //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
+            cell.cellButton.contentHorizontalAlignment = .Left
+            cell.cellButton.backgroundColor = UIColor.clearColor()
+            cell.cellButton.titleLabel?.textColor = UIColor.whiteColor()
         }
         
         if indexPath.row == 6 {
             cell.cellButton.setTitle("Transportation", forState: .Normal)
-            //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
+            cell.cellButton.contentHorizontalAlignment = .Left
+            cell.cellButton.backgroundColor = UIColor.clearColor()
+            cell.cellButton.titleLabel?.textColor = UIColor.whiteColor()
         }
         
         if indexPath.row == 7 {
             cell.cellButton.setTitle("Furniture", forState: .Normal)
-            //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
+            cell.cellButton.contentHorizontalAlignment = .Left
+            cell.cellButton.backgroundColor = UIColor.clearColor()
+            cell.cellButton.titleLabel?.textColor = UIColor.whiteColor()
         }
         
         if indexPath.row == 8 {
-            cell.cellButton.setTitle("Books & School Supplies", forState: .Normal)
-            //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
+            cell.cellButton.setTitle("School Supplies", forState: .Normal)
+            cell.cellButton.contentHorizontalAlignment = .Left
+            cell.cellButton.backgroundColor = UIColor.clearColor()
+            cell.cellButton.titleLabel?.textColor = UIColor.whiteColor()
         }
         
         if indexPath.row == 9 {
             cell.cellButton.setTitle("Services", forState: .Normal)
-            //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
-            
+            cell.cellButton.contentHorizontalAlignment = .Left
+            cell.cellButton.backgroundColor = UIColor.clearColor()
+            cell.cellButton.titleLabel?.textColor = UIColor.whiteColor()
         }
         
         if indexPath.row == 10 {
             cell.cellButton.setTitle("Other", forState: .Normal)
-            //            cell.cellButton.addTarget(self, action: #selector(didTapCategory), forControlEvents: .TouchUpInside)
+            cell.cellButton.contentHorizontalAlignment = .Left
+            cell.cellButton.backgroundColor = UIColor.clearColor()
+            cell.cellButton.titleLabel?.textColor = UIColor.whiteColor()
         }
         
+        if indexPath.row == 11 {
+            cell.cellButton.setTitle("In Search Of", forState: .Normal)
+            cell.cellButton.contentHorizontalAlignment = .Left
+            cell.cellButton.backgroundColor = UIColor.clearColor()
+            cell.cellButton.titleLabel?.textColor = UIColor.whiteColor()
+        }
         
         return cell
     }
     
-
+    
+    
+    //MARK: ACTION FUNCTIONS
     
     
     
     @IBAction func catButtonPushed(sender: AnyObject) {
         if let cat = sender.currentTitle {
-            if cat == "Album View" {
-                homeController.showAlbums = true
+            homeController.showAlbums = (cat == "Album View")
+            homeController.category = cat!
+            if cat != "Album View" {
+                homeController.filterByCategory(cat!)
             }
-            else {
-                homeController.category = cat!.lowercaseString
-                homeController.showAlbums = false
-                homeController.filterByCategory(cat!.lowercaseString)
-            }
-            homeController.menuIsOpen = false
-            homeController.collectionView!.reloadData()
-            self.revealViewController().revealToggleAnimated(true)
+            //homeController.menuIsOpen = false
+            homeController.toggleMenu()
+            homeController.tableView!.reloadData()
+            ///self.revealViewController().revealToggleAnimated(true)
         }
     }
+    
+    
 }
 
 

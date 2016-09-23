@@ -9,8 +9,8 @@
 import UIKit
 
 class CategoryCellWithButton: UITableViewCell {
-
-
+    
+    
     @IBOutlet weak var cellButton: UIButton!
     
     override func awakeFromNib() {

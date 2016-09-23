@@ -7,9 +7,9 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>98205665216-4ugokpnu3uhrhublebcum7jk4ti817e0.apps.googleusercontent.com</string>
+	<string>98205665216-2riqs8f1haa1sfmj77gotgque0lijivc.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.98205665216-4ugokpnu3uhrhublebcum7jk4ti817e0</string>
+	<string>com.googleusercontent.apps.98205665216-2riqs8f1haa1sfmj77gotgque0lijivc</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCPYSYVpF0ruyvsMS4Au8-NB3fDaqrIHmc</string>
 	<key>GCM_SENDER_ID</key>
@@ -17,7 +17,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.mguillory.Authtest.changedagain</string>
+	<string>com.bazaar.app.version.1.1</string>
 	<key>PROJECT_ID</key>
 	<string>bubbleu-app</string>
 	<key>STORAGE_BUCKET</key>
@@ -33,7 +33,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:98205665216:ios:da81e2e197cf0d57</string>
+	<string>1:98205665216:ios:3fc65ea4f2ccb610</string>
 	<key>DATABASE_URL</key>
 	<string>https://bubbleu-app.firebaseio.com</string>
 </dict>

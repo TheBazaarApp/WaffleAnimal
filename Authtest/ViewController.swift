@@ -10,65 +10,79 @@ import UIKit
 import FirebaseAuth
 
 class ViewController: UIViewController {
-
-    @IBOutlet var Username: UITextField!
     
-    
+    @IBOutlet weak var Username: UITextField!
     @IBOutlet var Password: UITextField!
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
+    @IBOutlet weak var loginButton: UIButton!
+    
+    var segueLoc = ""
+    
     
     override func viewWillAppear(animated: Bool) {
-       super.viewWillAppear(animated)
-        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
-            if user != nil {
-                self.performSegueWithIdentifier("SWRevealViewController", sender: nil)
-            }
-        }
-
+        super.viewWillAppear(animated)
+        
+    }
+    
+    func goToFeed() {
+        let feedScene = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SWRevealViewController") as UIViewController
+        let appDelegate = (UIApplication.sharedApplication().delegate as! AppDelegate)
+        appDelegate.window?.rootViewController = feedScene
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        mainClass.loginTime = true
+        loginButton.layer.cornerRadius = 5
         self.navigationController?.navigationBarHidden = true
         self.tabBarController?.tabBar.hidden = true
-       // self.view.backgroundColor = UIColor.init(red: 0.0, green: 0.1, blue: 0.6, alpha: 0.9)
-        // Do any additional setup after loading the view, typically from a nib.
         self.hideKeyboardWhenTappedAround()
+        if segueLoc == "collegeChooser" { 
+            showVerifyPopup()
+        }
     }
     
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    @IBAction func segmentedControlAction(sender: AnyObject) {
+        if(segmentedControl.selectedSegmentIndex == 1) {
+            self.performSegueWithIdentifier("iago", sender: nil)
+            
+        }
+        
     }
-
-
+    
+    
+    
+    
+    
+    
+    
+    func showVerifyPopup() {
+        let ac = UIAlertController(title: "Please Verify Email", message: "Almost done!  We need you to verify your email before you can start using Bazaar!", preferredStyle: .Alert)
+        let callActionHandler = { (action: UIAlertAction) -> Void in
+            let mailURL = NSURL(string: "message://")
+            if UIApplication.sharedApplication().canOpenURL(mailURL!){
+                UIApplication.sharedApplication().openURL(mailURL!)
+            }
+        }
+        ac.addAction(UIAlertAction(title: "Open Email", style: .Default, handler: callActionHandler))
+        ac.addAction(UIAlertAction(title: "Close", style: .Cancel, handler: nil))
+        self.presentViewController(ac, animated: true, completion: nil)
+        
+    }
+    
+    
+    
+    
     @IBAction func didPressLogin(sender: AnyObject) {
         FIRAuth.auth()?.signInWithEmail(Username.text!, password: Password.text!, completion: {user, error in
             if error != nil{
-                
-                let erroralert = UIAlertController(title: "Unable to Login", message: error?.localizedDescription, preferredStyle: .Alert)
-                erroralert.addAction(UIAlertAction(title: "Okay", style: .Default, handler: nil))
-                self.presentViewController(erroralert, animated: true, completion: nil)
-            }
-            else{
-                if ((FIRAuth.auth()?.currentUser?.emailVerified) != nil) && ((FIRAuth.auth()?.currentUser?.emailVerified) != false){
-                    
-                    let success = UIAlertController(title: "Login Successful", message: nil, preferredStyle: .Alert)
-                    let submitAction = UIAlertAction(title: "Ok", style: .Default) { [unowned self] (action: UIAlertAction!) in
-                        self.performSegueWithIdentifier("SWRevealViewController", sender: sender)
-                    }
-                    success.addAction(submitAction)
-                    self.presentViewController(success, animated: true, completion: nil)
-                }
-                else{
-                    let verify = UIAlertController(title: "Please Verify Email", message: "We need you to verify your email before you can start using BubbleU!", preferredStyle: .Alert)
-                    verify.addAction(UIAlertAction(title: "Verify", style: .Default, handler: nil))
-                    self.presentViewController(verify, animated: true, completion: nil)
-                }
+                mainClass.simpleAlert("Unable to Login", message: error!.localizedDescription, viewController: self)
             }
         })
     }
-
+    
     @IBAction func didPressForgotPassword(sender: AnyObject) {
         let ac = UIAlertController(title: "Enter email", message: nil, preferredStyle: .Alert)
         ac.addTextFieldWithConfigurationHandler(nil)
@@ -78,20 +92,42 @@ class ViewController: UIViewController {
         }
         
         ac.addAction(submitAction)
+        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
         presentViewController(ac, animated: true, completion: nil)
     }
     
     @IBAction func didPressSkipAndBrowse(sender: AnyObject) {
-//        let ac = UIAlertController(title: "Warning", message: "If you skip and browse, you cannot use the app in it's full scope", preferredStyle: .Alert)
-//        let submitAction = UIAlertAction(title: "Ok", style: .Default) { [unowned self] (action: UIAlertAction!) in
-//            self.performSegueWithIdentifier("SWRevealViewController", sender: nil)
-//        }
-//        let submitCancel = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
-//        ac.addAction(submitAction)
-//        ac.addAction(submitCancel)
-//        self.presentViewController(ac, animated: true, completion: nil)
-        self.performSegueWithIdentifier("SWRevealViewController", sender: nil)
+        //Check local storage
+        let defaults = NSUserDefaults.standardUserDefaults()
+        let collegeList = defaults.objectForKey("skipAndBrowseColleges")
+        if (collegeList as? [String]) != nil {
+            goToFeed()
+        } else {
+            //Go to college chooser
+            performSegueWithIdentifier("cogsworth", sender: nil)
+        }
     }
+    
+    
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        if segue.identifier == "cogsworth" { //Called when the user clicks on the "Add College" button
+            let navigationController = segue.destinationViewController as! UINavigationController
+            if let destination = navigationController.viewControllers.first as? CollegeChooser {
+                destination.segueLoc = "skipAndBrowse"
+                destination.previousVC = self
+            }
+        }
+    }
+    
+    
+    func notVerifiedAlert() {
+        mainClass.simpleAlert("Not Verified", message: "Please verify your email address in order to log in.", viewController: self)
+    }
+    
+    
+    
 }
 
 extension UIViewController {
@@ -103,5 +139,6 @@ extension UIViewController {
     func dismissKeyboard() {
         view.endEditing(true)
     }
+    
 }
 

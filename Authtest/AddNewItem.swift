@@ -4,73 +4,215 @@
 //
 //  Created by cssummer16 on 6/13/16.
 //  Copyright © 2016 Daksha Agarwal. All rights reserved.
+//
 
 import UIKit
 import Firebase
 import Photos
 
-class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
     
-    //MARK: VARIABLES AND OUTLETS
+    
+    
+    //MARK: OUTLETS AND VARIABLES
     
     //Outlets from text fields on the screen
     @IBOutlet weak var albumName: UITextField!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var locationDetails: UILabel!
+    @IBOutlet weak var tagAllField: UITextField!
+    @IBOutlet weak var cancel: UIImageView!
+    @IBOutlet weak var locationPin: UIImageView!
+    @IBOutlet weak var add: UIImageView!
+    
+    
+ 
+    
+    //Probs w. pics
+    
     
     var uid: String?
     let storageRef = FIRStorage.storage().referenceForURL("gs://bubbleu-app.appspot.com") //Create storage reference
     var ref = FIRDatabase.database().reference() //Root of the realtime database
     var items = [Item]()
-    let college = "hmc"
+    let college = mainClass.domainBranch!
     var userName: String?
-    var lat = 123.45
-    var long = 67.89
-    var locationLabel: String?
+    var lat: Double?
+    var long: Double?
+    var location: String?
+    var locDefault: String?
     var latDefault: Double?
     var longDefault: Double?
+    var album: String?
+    var albumID: String?
+    var key: String!
+    var segueLoc: String?
+    var imageKey: String?
+    var tagAll = true
+    var categoriesArray = ["None", "Fashion", "Electronics", "Appliances", "Transportation", "Furniture", "School Supplies", "Services", "In Search Of", "Other"]
+    var picker = UIPickerView()
+    var childUpdates = [String : AnyObject]()
+    let user = FIRAuth.auth()?.currentUser
+    var buyListener: FIRDatabaseHandle?
+    var currentlySaving = false
+    var cancelButton: UITapGestureRecognizer?
+    var addButton: UITapGestureRecognizer?
+    var firstFailure = true
+    var addingNewItem = true
+    var imagePickingIndex = 0
+    var showedISOPopupAlready = false
     
     
     
     //MARK: SETUP FUNCTIONS
     
-    
     override func viewDidLoad() {
+        
         super.viewDidLoad()
+        howToPopup()
+        let tagAllBox = NSAttributedString(string: "Tag All", attributes:[NSForegroundColorAttributeName:UIColor.whiteColor()])
+        tagAllField.attributedPlaceholder = tagAllBox
+        tagAllField.layer.borderColor = UIColor.whiteColor().CGColor
+        tagAllField.layer.borderWidth = 3
+        tagAllField.layer.cornerRadius = 11
+        self.tagAllField.clipsToBounds = true
+        self.automaticallyAdjustsScrollViewInsets = false
         let user = FIRAuth.auth()?.currentUser
         uid = user!.uid
         userName = user?.displayName
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: #selector(addNewAlbum))
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(AddNewItem.dismissKeyboard))
+        picker.delegate = self
+        picker.dataSource = self
+        tagAllField.inputView = picker
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
+        if segueLoc == "EditAlbums" {
+            editAlbum()
+            listenForBuyer()
+        }
+        
         getDefault()
+        cancelButton = UITapGestureRecognizer(target:self, action: #selector(cancelTapped))
+        cancel.addGestureRecognizer(cancelButton!)
+        let locationButton = UITapGestureRecognizer(target:self, action: #selector(locationTapped))
+        locationPin.addGestureRecognizer(locationButton)
+        addButton = UITapGestureRecognizer(target:self, action: #selector(addTapped))
+        add.addGestureRecognizer(addButton!)
+        albumName.delegate = self
+        collectionView.keyboardDismissMode = .OnDrag
+    }
+    
+    func howToPopup() {
+        hideablePopup("Adding Items", message: "Add multiple items to your album by tapping the '+' button.", defaultsKey: "AddNewItemHowTo")
+    }
+    
+    
+    func isoPopup() {
+        if !showedISOPopupAlready {
+            hideablePopup("ISO Album", message: "If you include ISOs in your album, all items in the album must be ISOs.", defaultsKey: "ISOHowTo")
+            showedISOPopupAlready = true
+        }
+    }
+    
+    
+    func hideablePopup(title: String, message: String, defaultsKey: String) {
+        let defaults = NSUserDefaults.standardUserDefaults()
+        
+        let hidePopup = defaults.boolForKey(defaultsKey)
+        if !hidePopup {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "Don't Show This Again", style: .Default, handler: { (alert: UIAlertAction!) -> Void in
+                defaults.setBool(true, forKey: defaultsKey)
+            }))
+            alert.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+    }
+    
+    
+    
+    
+    
+    override func viewDidDisappear(animated: Bool) {
         self.navigationController?.navigationBarHidden = false
+        self.tabBarController?.tabBar.hidden = false
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        self.navigationController?.navigationBarHidden = true
+        self.tabBarController?.tabBar.hidden = true
     }
     
     
     
-    override func dismissKeyboard() {
-        //Causes the view (or one of its embedded text fields) to resign the first responder status.
-        view.endEditing(true)
+    func locationTapped() {
+        self.performSegueWithIdentifier("Aurora", sender: self)
     }
     
+    
+    
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        if textField.accessibilityIdentifier == "albumName" {
+            let maxLength = 40
+            let currentString: NSString = albumName.text!
+            let newString: NSString = currentString.stringByReplacingCharactersInRange(range, withString: string)
+            return newString.length <= maxLength
+        }
+        return true
+    }
+    
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        let width = self.collectionView.frame.width
+        let height: CGFloat = 280.0
+        return CGSizeMake(width, height)
+    }
+    
+    //MARK: PICKERVIEW FUNCTIONS
+    
+    
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    // returns the # of rows in each component..
+    
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return categoriesArray.count
+    }
+    
+    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if row == 0 { //If you just selected "none"
+            tagAllField.text = ""
+        } else {
+            tagAllField.text = categoriesArray[row]
+            for item in items {
+                item.tag = tagAllField.text!
+            }
+            for cell in collectionView.visibleCells() {
+                let collectionViewCell = cell as! CollectionViewCell
+                collectionViewCell.tagField.text = collectionViewCell.item!.tag
+            }
+        }
+    }
+    
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return categoriesArray[row]
+    }
     
     
     
     
     //MARK: FIREBASE FUNCTIONS
     
-    ////////////////////////////////////////////////////////////////////////
     
-    
-    func getDefault() {
+    func getDefault(){
         if let user = FIRAuth.auth()?.currentUser {
             let dataRef = ref.child("\(self.college)/user/\(user.uid)/profile")
-            _ = dataRef.observeSingleEventOfType(FIRDataEventType.Value, withBlock: { (snapshot) in
+            dataRef.observeSingleEventOfType(FIRDataEventType.Value, withBlock: { (snapshot) in
                 let data = snapshot.value as? [String : AnyObject]
-                if let labelText = data?["defaultLocation"] as? String {
-                    self.locationLabel = labelText
+                if let locText = data?["defaultLocation"] as? String {
+                    self.locDefault = locText
                 }
                 if let latText = data?["defaultLatitude"] as? Double {
                     self.latDefault = latText
@@ -78,67 +220,201 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                 if let longText = data?["defaultLongitude"] as? Double {
                     self.longDefault = longText
                 }
-                else {
-                    self.latDefault = 0.0
-                    self.longDefault = 0.0
+            })
+        }
+    }
+    
+    
+    func listenForBuyer() {
+        if let user = user {
+            let buyRef = ref.child("\(self.college)/user/\(user.uid)/albums/\(albumID!)/unsoldItems")
+            buyListener = buyRef.observeEventType(.ChildRemoved, withBlock: { (snapshot) in
+                if !self.currentlySaving {
+                    let itemInfo = snapshot.value as! [String : AnyObject]
+                    let itemName = itemInfo["name"]
+                    mainClass.simpleAlert("Someone has bought one of your items", message: "Someone bought your \(itemName!)! This item will not be edited", viewController: self)
+                    for (index, item) in self.items.enumerate().reverse() {
+                        if item.imageKey == snapshot.key {
+                            self.items.removeAtIndex(index)
+                            self.collectionView.reloadData()
+                        }
+                    }
                 }
             })
         }
-        
     }
+    
+    
+    
+    func editAlbum() {
+        if let user = user {
+            let dataRef = ref.child("\(self.college)/user/\(user.uid)/albums/\(albumID!)")
+            dataRef.observeSingleEventOfType(FIRDataEventType.Value, withBlock: { (snapshot) in
+                let data = snapshot.value as? [String : AnyObject]
+                let albumDetails = data?["albumDetails"]
+                self.albumName.text = albumDetails?["albumName"] as? String
+                if let labelText = albumDetails?["location"] as? String {
+                    self.location = labelText
+                    self.locationDetails.text = labelText
+                    
+                }
+                let timestamp = albumDetails!["timestamp"] as! Double
+                if let latText = albumDetails?["locationLat"] as? Double {
+                    self.lat = latText
+                }
+                if let longText = albumDetails?["locationLong"] as? Double {
+                    self.long = longText
+                }
+                let unsoldItems = data?["unsoldItems"] as! [String : AnyObject]
+                for (imageKey,item) in unsoldItems {
+                    let descriptionText = item["description"] as! String?
+                    let name = item["name"] as! String?
+                    let price = item["price"] as! Double?
+                    let tag = item["tag"] as! String?
+                    let newItem = Item(itemDescription: descriptionText!, tag: tag!, itemName: name!, price: price!, timestamp: timestamp)
+                    newItem.imageKey = imageKey
+                    if tag == "In Search Of" {
+                        if (item["hasPic"] as? Bool) != nil {
+                            newItem.hasPic = false
+                        }
+                    }
+                    self.items.append(newItem)
+                    if newItem.hasPic {
+                        self.getImage(newItem, imageID: imageKey)
+                    } else {
+                        newItem.picture = UIImage(named: "Add Image")
+                        self.collectionView.reloadData()
+                    }
+                }
+                if self.tagAll == true {
+                    self.tagAllField.text = self.items[self.items.count-1].tag
+                }
+            })
+        }
+    }
+    
+    
+    
+    
+    
+    func getImage(item: Item, imageID: String) {
+        if let user = user {
+            let imageRef = storageRef.child("\(self.college)/user/\(user.uid)/images/\(imageID)")
+            imageRef.downloadURLWithCompletion{ (URL, error) -> Void in
+                if (error != nil) {
+                    item.picture = mainClass.defaultPic(item.tag)
+                } else {
+                    if let data = NSData(contentsOfURL: URL!) {
+                        item.picture = UIImage(data: data)
+                        
+                        if self.items.count != 1  && self.items[self.items.count-2].tag != item.tag {
+                            self.tagAll = false
+                        }
+                        self.collectionView.reloadData()
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
     //Save a new album into the database; called when you click the save button
     func addNewAlbum() {
-        
-        
-        let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .MediumStyle, timeStyle: .ShortStyle)
-        
-        //If there are no items in the album, show an alert popup.
-        if collectionView.visibleCells().count == 0 {
+        if !currentlySaving {
+            currentlySaving = true
+            let timestamp = NSDate().timeIntervalSince1970 * -1
             
-            let ac = UIAlertController(title: "Missing Name", message: "You fool!  How dare you save an album without any items!", preferredStyle: .Alert)
-            ac.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
-            presentViewController(ac, animated: true, completion: nil)
-        } else {
-            
-            
-            //Check whether there are unnamed items or items without prices; (*** Maybe later we should also require tag as well)
-            var theresAnUnnamedItem = false
-            for cell in collectionView.visibleCells() as! [CollectionViewCell] {
-                if (cell.itemName.text! == "" || cell.itemPrice == nil || cell.itemPrice.text! == "") {
-                    theresAnUnnamedItem = true
-                    break
-                }
-            }
-            
-            
-            //If an item or the album are missing a name, show an alert popup.
-            if (theresAnUnnamedItem || albumName.text == "") {
-                let ac = UIAlertController(title: "Missing Name", message: "You imbecil!  The album and all of the items need names and prices!!!!", preferredStyle: .Alert)
-                ac.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
-                presentViewController(ac, animated: true, completion: nil)
+            //If there are no items in the album, show an alert popup.
+            if collectionView.visibleCells().count == 0 {
+                currentlySaving = false
+                mainClass.simpleAlert("Missing Name", message: "You can't save an album without any items!", viewController: self)
             } else {
                 
                 
-                //If there are no problems, save the items
-                let key = ref.child("\(college)/user/\(uid!)/albums").childByAutoId().key //Generate a unique album ID (***Later, change this to the path which is directly under college (not under user))
-                // for cell in collectionView.visibleCells() as! [CollectionViewCell] { //Loop through the cells (each of which represents one item)
+                //Check whether there are unnamed items or items without prices; (*** Maybe later we should also require tag as well)
+                var hasISO = false
+                var hasNonISO = false
+                
                 for item in items {
-                    let imageKey = ref.child("\(college)/user/\(uid!)/unsoldItems").childByAutoId().key //Generate a unique album ID
-                    let image = item.getPicture()
-                    let imageRef = self.storageRef.child(college).child("user").child(self.uid!).child("unsoldItems").child("\(imageKey)")
+                    if (item.itemName == "") {
+                        mainClass.simpleAlert("Missing Name", message: "All of the items need names.", viewController: self)
+                        currentlySaving = false
+                        return
+                    }
+                    if (item.price == -0.1134 && item.tag != "In Search Of") {
+                        mainClass.simpleAlert("Missing Price", message: "All items except ISOs need prices.", viewController: self)
+                        currentlySaving = false
+                        return
+                    }
+                    if (item.itemDescription == "" && item.tag == "In Search Of") {
+                        mainClass.simpleAlert("Missing Description", message: "All ISOs require descriptions", viewController: self)
+                        currentlySaving = false
+                        return
+                    }
+                    if (!item.hasPic && item.tag != "In Search Of") {
+                        mainClass.simpleAlert("Missing Image", message: "All items (except ISOs) require images.", viewController: self)
+                        currentlySaving = false
+                        return
+                    }
+                    if ( (hasISO && item.tag != "In Search Of") || (hasNonISO && item.tag == "In Search Of") ) {
+                        mainClass.simpleAlert("Can't Mix ISOs and Other Items", message: "Either all of your items must have the 'In Search Of' tag or none of them can have it.", viewController: self)
+                        currentlySaving = false
+                        return
+                    }
+                    if item.tag == "In Search Of" {
+                        hasISO = true
+                    } else {
+                        hasNonISO = true
+                    }
+                }
+                
+                if albumName.text == "" {
+                    mainClass.simpleAlert("Missing Album Name", message: "", viewController: self)
+                    currentlySaving = false
+                    return
+                }
+                
+                
+                //If an item or the album are missing a name, show an alert popup.
+                if segueLoc == "EditAlbums" {
+                    key = albumID!
+                }
+                else {
                     
-                    
-                    
-                    let imageData: NSData = UIImagePNGRepresentation((image))!
-                    imageRef.putData(imageData, metadata: nil) { metadata, error in
-                        if (error != nil) {
-                            print ("Great scott!  We have encountered a problem!")
-                        }
+                    //If there are no problems, save the items
+                    key = ref.child("\(college)/user/\(uid!)/albums").childByAutoId().key //Generate a unique album ID (***Later, change this to the path which is directly under college (not under user))
+                }
+                for item in items {
+                    if segueLoc == "EditAlbums"  && item.imageKey != "" {
+                        imageKey = item.imageKey
+                    }
+                    else {
+                        imageKey = ref.child("\(college)/user/\(uid!)/unsoldItems").childByAutoId().key //Generate a unique album ID
                     }
                     
+                    if item.hasPic {
+                        let image = item.picture
+                        let imageRef = self.storageRef.child("\(college)/user/\(self.uid!)/images/\(imageKey!)")
+                        let imageData: NSData = UIImagePNGRepresentation((image)!)!
+                        imageRef.putData(imageData, metadata: nil) { metadata, error in
+                            if let top = UIApplication.topViewController() {
+                                if error != nil {
+                                    mainClass.simpleAlert("Error Saving Album Pictures", message: "You can add the correct pictures by editing your album.", viewController: top)
+                                }
+                            }
+                        }
+                    }
                     
                     
                     //Store item details in the database in two different places (by album, and just by image) (*** Maybe one more place as well)
@@ -149,51 +425,42 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                     let nameOfAlbum = albumName.text!
                     
                     
-                    var details = [String: AnyObject]()
-                    
-                    var imageDetail2 = [String: AnyObject]()
+                    var detailsUnderItems = [String: AnyObject]()
+                    var detailsUnderAlbums = [String: AnyObject]()
                     
                     if uid != nil {
                         
-                        details = ["price": price,
-                                   "description": description,
-                                   "tag": "electronics",
-                                   "sellerId": uid! as NSString,
-                                   "sellerName": userName!,
-                                   "timestamp": timestamp,
-                                   "name": name,
-                                   "albumName": nameOfAlbum,
-                                   "imageKey": imageKey,
-                                   "location": locationDetails.text!,
-                                   "locationLat": lat,
-                                   "locationLong": long]
+                        detailsUnderAlbums = ["price": price,
+                                              "description": description,
+                                              "tag": item.tag,
+                                              "name": name]
                         
                         
+                        detailsUnderItems = ["price": price,
+                                             "description": description,
+                                             "tag": item.tag,
+                                             "sellerId": uid! as NSString,
+                                             "sellerName": userName!,
+                                             "timestamp": timestamp,
+                                             "name": name,
+                                             "albumName": nameOfAlbum,
+                                             "albumKey": key]
                         
-                        imageDetail2 = ["name": name,
-                                        "price": price,
-                                        "description": description,
-                                        "user": uid! as NSString,
-                                        "sellerName": userName!,
-                                        "albumName": nameOfAlbum,
-                                        "imageKey": imageKey,
-                                        "location": locationDetails.text!,
-                                        "locationLat": lat,
-                                        "locationLong": long]
                         
+                        if item.tag == "In Search Of" && !item.hasPic {
+                            detailsUnderItems["hasPic"] = false
+                            detailsUnderAlbums["hasPic"] = false
+                        }
+                        
+                            detailsUnderItems["locationLat"] = lat ?? NSNull()
+                            detailsUnderItems["locationLong"] = long ?? NSNull()
+                            detailsUnderItems["location"] = location ?? NSNull()
                     }
                     
-                    let imageKey2 = ref.child("\(college)/user/\(uid!)/albums/\(key)/unsoldItems").childByAutoId().key
-                    let imageKey3 = ref.child("\(college)/albums/\(key)/unsoldItems/").childByAutoId().key
-                    let imageKey4 = ref.child("\(college)/unsoldItems/").childByAutoId().key
+                    childUpdates["\(college)/user/\(uid!)/albums/\(key)/unsoldItems/\(imageKey!)"] = detailsUnderAlbums
+                    childUpdates["\(college)/albums/\(key)/unsoldItems/\(imageKey!)"] = detailsUnderAlbums
+                    childUpdates["\(college)/user/\(uid!)/unsoldItems/\(imageKey!)"] = detailsUnderItems
                     
-                    
-                    let childUpdates = ["\(college)/user/\(uid!)/albums/\(key)/unsoldItems/\(imageKey2)": details,
-                                        "\(college)/albums/\(key)/unsoldItems/\(imageKey3)": details,
-                                        "\(college)/user/\(uid!)/unsoldItems/\(imageKey)": details,
-                                        "\(college)/unsoldItems/\(imageKey4)": imageDetail2]
-                    
-                    ref.updateChildValues(childUpdates as [NSObject : AnyObject])
                 }
                 
                 
@@ -201,19 +468,87 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                 //Store the album details
                 
                 
-                let details = ["albumName": self.albumName.text!]
                 
-                let childUpdates = ["\(college)/user/\(uid!)/albums/\(key)/albumDetails":details]
+                var albumDetailsUnderUser = ["albumName": self.albumName.text!,
+                                             "timestamp": timestamp] as [String : AnyObject]
+                
+                var albumDetailsUnderCollege = ["albumName": self.albumName.text!,
+                                                "sellerID": uid! as NSString,
+                                                "sellerName": userName!,
+                                                "timestamp": timestamp] as [String: AnyObject]
+                
+                    albumDetailsUnderUser["locationLat"] = lat ?? NSNull()
+                    albumDetailsUnderUser["locationLong"] = long ?? NSNull()
+                    albumDetailsUnderUser["location"] = location ?? NSNull()
+                    albumDetailsUnderCollege["locationLat"] = lat ?? NSNull()
+                    albumDetailsUnderCollege["locationLong"] = long ?? NSNull()
+                    albumDetailsUnderCollege["location"] = location ?? NSNull()
+
                 
                 
-                ref.updateChildValues(childUpdates as [NSObject : AnyObject]) //(*** Try to do this all in on ref.updateChildValues call so it's all atomic)
+                childUpdates["\(college)/user/\(uid!)/albums/\(key)/albumDetails"] = albumDetailsUnderUser
+                childUpdates["\(college)/albums/\(key)/albumDetails"] = albumDetailsUnderCollege
                 
+                ref.updateChildValues(childUpdates as [NSObject : AnyObject])
                 
                 //Go back to the profile
                 self.navigationController?.popViewControllerAnimated(true)
+                
             }
         }
+    }
+    
+    
+    
+    func deleteOldItems(){ //Possibly put this in the last function? Make sure it's called before addAlbum
+        //Get all of the user's unsold items in this album
+        let pathToAlbum = ref.child("\(college)/user/\(uid!)/albums/\(albumID!)/unsoldItems")
+        pathToAlbum.observeSingleEventOfType(FIRDataEventType.Value, withBlock: { (snapshot) in
+            let itemsDict = snapshot.value as! [String : AnyObject]
+            var unsoldItemIDs = Array(itemsDict.keys)
+            
+            for (index, itemID) in unsoldItemIDs.enumerate().reverse() { //Loop through items in the database; delete any that are still here
+                for item in self.items {
+                    if item.imageKey == itemID { //If we have an image key match
+                        unsoldItemIDs.removeAtIndex(index)
+                        break
+                    }
+                }
+                
+            }
+            
+            //All items left in the list are items in the database which have been deleted (theoretically).  Let's get rid of them.
+            
+            for deletedItem in unsoldItemIDs {
+                self.deleteItem(deletedItem)
+                self.deleteImage(deletedItem)
+            }
+            
+            self.addNewAlbum()
+            
+        })
+    }
+    
+    
+    
+    
+    func deleteItem(imageID: String) {
+        let pathToUserUnsoldItems = "/\(self.college)/user/\(self.uid!)/unsoldItems/\(imageID)"
+        let pathToUserAlbums = "/\(self.college)/user/\(self.uid!)/albums/\(albumID!)/unsoldItems/\(imageID)"
+        let pathToCollegeAlbums = "/\(self.college)/albums/\(albumID!)/unsoldItems/\(imageID)"
         
+        childUpdates[pathToUserUnsoldItems] = NSNull()
+        childUpdates[pathToUserAlbums] = NSNull()
+        childUpdates[pathToCollegeAlbums] = NSNull()
+        
+        
+    }
+    
+    
+    
+    func deleteImage(imageID: String) {
+        let imagePath = self.storageRef.child("\(self.college)/user/\(self.uid!)/images/\(imageID)")
+        imagePath.deleteWithCompletion { (error) -> Void in }
     }
     
     
@@ -226,18 +561,58 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
     
     //MARK: IMAGE PICKER FUNCTIONS
     
-    ////////////////////////////////////////////////////////////////////////
+    func addTapped() {
+        addingNewItem = true
+        showPicOptions(nil)
+    }
+    
+    
+    
+    func showPicOptions (imageButton: UIButton?) {
+        let optionsMenu = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        
+        optionsMenu.addAction(UIAlertAction(title: "Photo Library", style: .Default, handler: {  (alert: UIAlertAction!) -> Void in
+            self.openImagePicker(false)
+        }))
+        optionsMenu.addAction(UIAlertAction(title: "Take Photo", style: .Default, handler: {  (alert: UIAlertAction!) -> Void in
+            self.openImagePicker(true)
+        }))
+        if addingNewItem {
+        optionsMenu.addAction(UIAlertAction(title: "Add Item Without Image", style: .Default, handler: {  (alert: UIAlertAction!) -> Void in
+            if self.addingNewItem {
+                self.createNewItem(nil)
+            }
+        }))
+        }
+        if let imageButton = imageButton {
+            if self.items[self.imagePickingIndex].hasPic {
+                optionsMenu.addAction(UIAlertAction(title: "Delete Photo", style: .Default, handler: {  (alert: UIAlertAction!) -> Void in
+                    imageButton.setImage(UIImage(named: "Add Image"), forState: .Normal)
+                    self.items[self.imagePickingIndex].hasPic = false
+                }))
+            }
+        }
+        optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler:  nil))
+        presentViewController(optionsMenu, animated: true, completion: nil)
+    }
     
     
     
     
-    //Open the picker when you click Add Item (*** Maybe later we should give an option to add an item w/o a pic)
-    @IBAction func addItemButton(sender: UIButton) {
+    func openImagePicker(camera: Bool) {
         let picker = UIImagePickerController()
-        picker.allowsEditing = true //Allow people to crop images
         picker.delegate = self
+        picker.allowsEditing = true //Allow people to crop images
+        if camera {
+            picker.sourceType = .Camera
+            picker.cameraDevice = .Rear
+        }
         presentViewController(picker, animated: true, completion: nil)
     }
+    
+    
+    
+    
     
     
     
@@ -245,7 +620,6 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
     //When the user pushes cancel on the image Picker, just close it.
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         dismissViewControllerAnimated(true, completion: nil)
-        
     }
     
     
@@ -263,10 +637,35 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
             return
         }
         
-        let item = Item(itemDescription: "description", tags: "", itemName: "", price: -0.1134, picture: newImage, seller: "", timestamp: "", uid: (FIRAuth.auth()?.currentUser?.uid)!)
+        if addingNewItem {
+            createNewItem(newImage)
+        } else {
+            items[imagePickingIndex].picture = newImage
+            items[imagePickingIndex].hasPic = true
+            collectionView.reloadData()
+        }
+        
+        
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    
+    
+    func createNewItem(image: UIImage?) {
+        let item = Item()
+        if let image = image {
+            item.picture = image
+        } else {
+            item.hasPic = false
+            item.picture = UIImage(named: "Add Image")
+        }
+        item.tag = tagAllField.text!
+        
         items.append(item)
         collectionView.reloadData()
-        dismissViewControllerAnimated(true, completion: nil)
+        let newItem = self.collectionView(self.collectionView!, numberOfItemsInSection: 0) - 1
+        let lastItemIndex = NSIndexPath(forItem: newItem, inSection: 0)
+        self.collectionView.scrollToItemAtIndexPath(lastItemIndex, atScrollPosition: .Top, animated: false)
     }
     
     
@@ -276,9 +675,8 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
     
     
     
-    //MARK: COLLECTION VIEW FUNCTIONS
     
-    ////////////////////////////////////////////////////////////////////////
+    //MARKK: COLLECTION VIEW FUNCTIONS
     
     
     //Returns the number of items that should show up in the collection view
@@ -292,22 +690,29 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Image", forIndexPath: indexPath) as! CollectionViewCell
         cell.initializeListeners() // (*** Ideally, these should go in the init() function of CollectionViewCell, but it keeps giving an error :(
+        cell.addNewItemClass = self
+        let deleteButton = UITapGestureRecognizer(target:self, action: #selector(deleteTapped(_:)))
+        cell.deleteButton.addGestureRecognizer(deleteButton)
+        cell.deleteButton.tag = indexPath.row
         
-        //Specify what happens when X button is pressed
-        cell.deleteButton?.addTarget(self, action: #selector(AddNewItem.xButtonPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        cell.deleteButton?.layer.setValue(indexPath.row, forKey: "index")
+        let imageTapRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:)))
+        cell.itemImage.addGestureRecognizer(imageTapRecognizer)
+        cell.itemImage.tag = indexPath.row
         
         let item = items[indexPath.item]
         cell.item = item //Add item to cell
-        
+        cell.tag = indexPath.row
         //Add border and curved edges to the cell
-        cell.imageView.layer.borderColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3).CGColor
-        cell.imageView.layer.borderWidth = 2
-        cell.layer.cornerRadius = 7
+        cell.itemImage.layer.cornerRadius = cell.itemImage.frame.size.width / 20
+        cell.itemImage.clipsToBounds = true
+        
         
         //Fill cell with info
-        cell.imageView.image = item.getPicture()
+        if let pic = item.picture {
+            cell.itemImage.setImage(pic, forState: .Normal)
+        }
         cell.itemName.text = item.itemName
+        cell.tagField.text = item.tag
         if item.price ==  -0.1134 {
             cell.itemPrice.text = ""
         } else {
@@ -315,15 +720,30 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
         }
         
         cell.itemDescription.text = item.itemDescription
+        cell.itemDescription.layer.cornerRadius = 5
+        cell.layer.cornerRadius = cell.frame.size.width/50
+        cell.clipsToBounds = true
         
         return cell
     }
     
     
     
-    //Delete the item if you click the X-button on it
-    @IBAction func xButtonPressed(sender: UIButton) {
-        let i : Int = (sender.layer.valueForKey("index")) as! Int
+    
+    
+    
+    func imageTapped(gestureRec: UITapGestureRecognizer) {
+        addingNewItem = false
+        let imageView = gestureRec.view as! UIButton
+        imagePickingIndex = imageView.tag
+        showPicOptions(imageView)
+    }
+    
+    
+    
+    func deleteTapped(gestureRec: UITapGestureRecognizer) {
+        let delete = gestureRec.view as! UIImageView
+        let i = delete.tag
         items.removeAtIndex(i)
         collectionView.reloadData()
     }
@@ -332,17 +752,98 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
     
     
     
-    //MARK: NAVIGATION/SEGUES
+    
+    override func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
+    }
+    
+    
+    
+    
+    
+    
+    
+    //MARK: NAVIGATION FUNCTIONS
+    
+    
+    
+    
+    
+    func cancelTapped() {
+        cancel.removeGestureRecognizer(cancelButton!)
+        navigationController?.popViewControllerAnimated(true)
+    }
+    
+    
+    @IBAction func saveTapped(sender: UIButton) {
+        if let nameOfAlbum = albumName.text {
+            if let alert = nameOfAlbum.removeBadWords() {
+                self.presentViewController(alert, animated: true, completion: nil)
+                currentlySaving = false
+                return
+            }
+        }
+        for cell in self.collectionView.visibleCells() {
+            let itemCell = cell as! CollectionViewCell
+            if let name = itemCell.itemName.text {
+                if let alert = name.removeBadWords() {
+                    self.presentViewController(alert, animated: true, completion: nil)
+                    currentlySaving = false
+                    return
+                }
+            }
+            if let description = itemCell.itemDescription.text {
+                if let alert = description.removeBadWords() {
+                    self.presentViewController(alert, animated: true, completion: nil)
+                    currentlySaving = false
+                    return
+                }
+            }
+        }
+        if let locationDescription = location {
+            if let alert = locationDescription.removeBadWords() {
+                self.presentViewController(alert, animated: true, completion: nil)
+                currentlySaving = false
+                return
+            }
+        }
+        if segueLoc == "EditAlbums" {
+            deleteOldItems()
+        } else {
+            addNewAlbum()
+        }
+        
+    }
     
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
-        if segue.identifier == "aurora" { //Called when the user clicks on the "Unsold Items" button
+        if segue.identifier == "Aurora" { //Called when the user clicks on the "Location" button
             if let destination = segue.destinationViewController as? MapViewController {
                 destination.segueLoc = "AddNewItem"
                 destination.latDefault = latDefault
+                destination.defaultLoc = locDefault
                 destination.longDefault = longDefault
+                if lat != nil {
+                    destination.lat = lat
+                    destination.long = long
+                    destination.preexistingLocation = true
+                    if location != nil {
+                        destination.locationDescription = location!
+                    }
+                }
             }
+        }
+    }
+    
+    
+    
+    
+    
+    deinit {
+        if buyListener != nil {
+            ref.removeObserverWithHandle(buyListener!)
         }
     }
     

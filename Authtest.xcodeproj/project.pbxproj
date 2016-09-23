@@ -16,7 +16,6 @@
 		2B1F04951D21CAE200177672 /* EditProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1F048E1D21CAE200177672 /* EditProfile.swift */; };
 		2B1F04961D21CAE200177672 /* ViewItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1F048F1D21CAE200177672 /* ViewItems.swift */; };
 		2B1F04971D21CAE200177672 /* ViewItemsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1F04901D21CAE200177672 /* ViewItemsCell.swift */; };
-		2B1F04981D21CAE200177672 /* CloseUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1F04911D21CAE200177672 /* CloseUp.swift */; };
 		2B1F04991D21CAE200177672 /* ViewAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1F04921D21CAE200177672 /* ViewAlbum.swift */; };
 		2B1F049A1D21CAE200177672 /* AlbumImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1F04931D21CAE200177672 /* AlbumImages.swift */; };
 		2B1F049C1D21CB6D00177672 /* icon-user-default.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B1F049B1D21CB6D00177672 /* icon-user-default.png */; };
@@ -27,20 +26,51 @@
 		2B5F206E1D2C6EF200724E76 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5F206D1D2C6EF200724E76 /* CollectionViewCell.swift */; };
 		2B5F20701D2C6F2000724E76 /* FeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5F206F1D2C6F2000724E76 /* FeedController.swift */; };
 		2B5F20721D2C6F5C00724E76 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5F20711D2C6F5C00724E76 /* Item.swift */; };
-		2B5F20761D2D6EB800724E76 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2B5F20751D2D6EB800724E76 /* GoogleService-Info.plist */; };
 		2B7F74411D186B5300CF7DE2 /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7F74401D186B5300CF7DE2 /* SWRevealViewController.m */; };
 		2B7F74431D186CF300CF7DE2 /* CategoriesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B7F74421D186CF300CF7DE2 /* CategoriesTableViewController.swift */; };
 		2B7F74451D18A0F000CF7DE2 /* CategoryCellWithButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B7F74441D18A0F000CF7DE2 /* CategoryCellWithButton.swift */; };
 		2B928B131D11F2A100EB8FB4 /* MapTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B928B121D11F2A100EB8FB4 /* MapTasks.swift */; };
-		2BAF0F261D1B2EA500BDBC9E /* ConversationTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BAF0F251D1B2EA500BDBC9E /* ConversationTableViewController.swift */; };
+		2BAC6FB51D302ABE00077D83 /* CloseUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BAC6FB41D302ABE00077D83 /* CloseUp.swift */; };
+		2BAC6FB71D302AFF00077D83 /* contactsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BAC6FB61D302AFF00077D83 /* contactsCell.swift */; };
+		2BAC6FB91D302B6D00077D83 /* ConversationTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BAC6FB81D302B6D00077D83 /* ConversationTableViewController.swift */; };
+		2BAD3AC31D41A23300191154 /* FullScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BAD3AC21D41A23300191154 /* FullScreenViewController.swift */; };
+		2BAD3AC51D41ABC600191154 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BAD3AC41D41ABC600191154 /* NotificationCell.swift */; };
+		2BAD3AC71D41ABD000191154 /* NotificationsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BAD3AC61D41ABD000191154 /* NotificationsPage.swift */; };
+		2BAD3AC91D41ABD600191154 /* NotificationsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BAD3AC81D41ABD600191154 /* NotificationsHandler.swift */; };
+		2BB77F061D515F8B0027B207 /* viewSold.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BB77F051D515F8B0027B207 /* viewSold.swift */; };
+		2BB77F081D516B3F0027B207 /* ViewPurchased.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BB77F071D516B3F0027B207 /* ViewPurchased.swift */; };
+		2BBA19DE1D55422000264157 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BBA19D61D55422000264157 /* Settings.swift */; };
+		2BBA19DF1D55422000264157 /* CollegeChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BBA19D71D55422000264157 /* CollegeChooser.swift */; };
+		2BBA19E01D55422000264157 /* WordReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BBA19D81D55422000264157 /* WordReader.swift */; };
+		2BBA19E11D55422000264157 /* collegesPlain.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2BBA19D91D55422000264157 /* collegesPlain.txt */; };
+		2BBA19E31D55422000264157 /* collegeList.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2BBA19DB1D55422000264157 /* collegeList.txt */; };
+		2BBA19E41D55422000264157 /* collegeListFormatter.py in Resources */ = {isa = PBXBuildFile; fileRef = 2BBA19DC1D55422000264157 /* collegeListFormatter.py */; };
 		2BBFA2C01D0F725600D735B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BBFA2BF1D0F725600D735B1 /* AppDelegate.swift */; };
 		2BBFA2C21D0F725600D735B1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BBFA2C11D0F725600D735B1 /* ViewController.swift */; };
 		2BBFA2C71D0F725600D735B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2BBFA2C61D0F725600D735B1 /* Assets.xcassets */; };
 		2BBFA2CA1D0F725600D735B1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2BBFA2C81D0F725600D735B1 /* LaunchScreen.storyboard */; };
 		2BDA773F1D19B791005D73F5 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BDA773E1D19B791005D73F5 /* ChatViewController.swift */; };
-		2BE221E21D25C622001C3536 /* FeedCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BE221E11D25C622001C3536 /* FeedCollectionViewCell.swift */; };
+		2BDFE98E1D569751004087BC /* VerifyCollegeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BDFE98D1D569751004087BC /* VerifyCollegeViewController.swift */; };
+		2BDFE9901D569769004087BC /* UnknownCollegeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BDFE98F1D569769004087BC /* UnknownCollegeViewController.swift */; };
+		2BDFE9921D58E8DB004087BC /* EmailDomainGetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BDFE9911D58E8DB004087BC /* EmailDomainGetter.swift */; };
+		2BDFE9941D58EDED004087BC /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BDFE9931D58EDED004087BC /* Global.swift */; };
+		2BEB84B91D5B9C6900EA6F0A /* RatingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BEB84B81D5B9C6700EA6F0A /* RatingViewController.swift */; };
 		2BFAFAB41D106D9900CD1EA8 /* CreateAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BFAFAB31D106D9900CD1EA8 /* CreateAccountViewController.swift */; };
 		2BFAFAB81D10B97A00CD1EA8 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BFAFAB71D10B97A00CD1EA8 /* MapViewController.swift */; };
+		2D18C7BB1D650B5C0022F2CA /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D18C7BA1D650B5C0022F2CA /* File.swift */; };
+		419995E11D9270D8009D949B /* ReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419995E01D9270D8009D949B /* ReportViewController.swift */; };
+		990790F81D683A7E00ABCA08 /* ItemTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990790F71D683A7E00ABCA08 /* ItemTableViewController.swift */; };
+		990790FA1D69166E00ABCA08 /* FeedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990790F91D69166E00ABCA08 /* FeedTableViewCell.swift */; };
+		996E69751D7A376B005A662B /* KeywordListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996E69741D7A376B005A662B /* KeywordListener.swift */; };
+		996E69771D7A504B005A662B /* KeyTermCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996E69761D7A504B005A662B /* KeyTermCell.swift */; };
+		996E69791D7A9115005A662B /* NewKeyword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996E69781D7A9115005A662B /* NewKeyword.swift */; };
+		998864B41D6D832A00841EDF /* FeedCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998864B31D6D832A00841EDF /* FeedCollectionCell.swift */; };
+		998864B61D6FB6A300841EDF /* CollegeChooserTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998864B51D6FB6A300841EDF /* CollegeChooserTableView.swift */; };
+		99993DE81D6A5CDA0031A885 /* NewChanges.txt in Resources */ = {isa = PBXBuildFile; fileRef = 99993DE71D6A5CDA0031A885 /* NewChanges.txt */; };
+		99993DEB1D6B71040031A885 /* ServiceAccount.json in Resources */ = {isa = PBXBuildFile; fileRef = 99993DEA1D6B71040031A885 /* ServiceAccount.json */; };
+		99993DED1D6B87370031A885 /* SearchBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99993DEC1D6B87370031A885 /* SearchBarController.swift */; };
+		99993DEF1D6BFD1C0031A885 /* AdminFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99993DEE1D6BFD1C0031A885 /* AdminFunctions.swift */; };
+		99F258D51D74E90D0058DD03 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99F258D41D74E90D0058DD03 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,7 +82,6 @@
 		2B1F048E1D21CAE200177672 /* EditProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfile.swift; sourceTree = "<group>"; };
 		2B1F048F1D21CAE200177672 /* ViewItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewItems.swift; sourceTree = "<group>"; };
 		2B1F04901D21CAE200177672 /* ViewItemsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewItemsCell.swift; sourceTree = "<group>"; };
-		2B1F04911D21CAE200177672 /* CloseUp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloseUp.swift; sourceTree = "<group>"; };
 		2B1F04921D21CAE200177672 /* ViewAlbum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewAlbum.swift; sourceTree = "<group>"; };
 		2B1F04931D21CAE200177672 /* AlbumImages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumImages.swift; sourceTree = "<group>"; };
 		2B1F049B1D21CB6D00177672 /* icon-user-default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-user-default.png"; sourceTree = "<group>"; };
@@ -63,25 +92,56 @@
 		2B5F206D1D2C6EF200724E76 /* CollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		2B5F206F1D2C6F2000724E76 /* FeedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedController.swift; sourceTree = "<group>"; };
 		2B5F20711D2C6F5C00724E76 /* Item.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
-		2B5F20751D2D6EB800724E76 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2B7F743E1D186B5200CF7DE2 /* Authtest-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Authtest-Bridging-Header.h"; sourceTree = "<group>"; };
 		2B7F743F1D186B5300CF7DE2 /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		2B7F74401D186B5300CF7DE2 /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
 		2B7F74421D186CF300CF7DE2 /* CategoriesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoriesTableViewController.swift; sourceTree = "<group>"; };
 		2B7F74441D18A0F000CF7DE2 /* CategoryCellWithButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryCellWithButton.swift; sourceTree = "<group>"; };
 		2B928B121D11F2A100EB8FB4 /* MapTasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapTasks.swift; sourceTree = "<group>"; };
-		2BAF0F251D1B2EA500BDBC9E /* ConversationTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationTableViewController.swift; sourceTree = "<group>"; };
-		2BBFA2BC1D0F725600D735B1 /* Authtest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Authtest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2BAC6FB41D302ABE00077D83 /* CloseUp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloseUp.swift; sourceTree = "<group>"; };
+		2BAC6FB61D302AFF00077D83 /* contactsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = contactsCell.swift; sourceTree = "<group>"; };
+		2BAC6FB81D302B6D00077D83 /* ConversationTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationTableViewController.swift; sourceTree = "<group>"; };
+		2BAD3AC21D41A23300191154 /* FullScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullScreenViewController.swift; sourceTree = "<group>"; };
+		2BAD3AC41D41ABC600191154 /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
+		2BAD3AC61D41ABD000191154 /* NotificationsPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsPage.swift; sourceTree = "<group>"; };
+		2BAD3AC81D41ABD600191154 /* NotificationsHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsHandler.swift; sourceTree = "<group>"; };
+		2BB77F051D515F8B0027B207 /* viewSold.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = viewSold.swift; path = ../viewSold.swift; sourceTree = "<group>"; };
+		2BB77F071D516B3F0027B207 /* ViewPurchased.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewPurchased.swift; path = ../ViewPurchased.swift; sourceTree = "<group>"; };
+		2BBA19D61D55422000264157 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		2BBA19D71D55422000264157 /* CollegeChooser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollegeChooser.swift; sourceTree = "<group>"; };
+		2BBA19D81D55422000264157 /* WordReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordReader.swift; sourceTree = "<group>"; };
+		2BBA19D91D55422000264157 /* collegesPlain.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = collegesPlain.txt; sourceTree = "<group>"; };
+		2BBA19DB1D55422000264157 /* collegeList.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = collegeList.txt; sourceTree = "<group>"; };
+		2BBA19DC1D55422000264157 /* collegeListFormatter.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = collegeListFormatter.py; sourceTree = "<group>"; };
+		2BBFA2BC1D0F725600D735B1 /* Bazaar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bazaar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BBFA2BF1D0F725600D735B1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2BBFA2C11D0F725600D735B1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		2BBFA2C61D0F725600D735B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2BBFA2C91D0F725600D735B1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2BBFA2CB1D0F725600D735B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2BDA773E1D19B791005D73F5 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
-		2BE221E11D25C622001C3536 /* FeedCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedCollectionViewCell.swift; sourceTree = "<group>"; };
+		2BDFE98D1D569751004087BC /* VerifyCollegeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerifyCollegeViewController.swift; sourceTree = "<group>"; };
+		2BDFE98F1D569769004087BC /* UnknownCollegeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnknownCollegeViewController.swift; sourceTree = "<group>"; };
+		2BDFE9911D58E8DB004087BC /* EmailDomainGetter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailDomainGetter.swift; sourceTree = "<group>"; };
+		2BDFE9931D58EDED004087BC /* Global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
+		2BEB84B81D5B9C6700EA6F0A /* RatingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatingViewController.swift; sourceTree = "<group>"; };
 		2BFAFAB31D106D9900CD1EA8 /* CreateAccountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateAccountViewController.swift; sourceTree = "<group>"; };
 		2BFAFAB71D10B97A00CD1EA8 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		2D18C7BA1D650B5C0022F2CA /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		3D09CF547DE81DC1BAC7883B /* Pods-Authtest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Authtest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Authtest/Pods-Authtest.debug.xcconfig"; sourceTree = "<group>"; };
+		419995E01D9270D8009D949B /* ReportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportViewController.swift; sourceTree = "<group>"; };
+		990790F71D683A7E00ABCA08 /* ItemTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemTableViewController.swift; sourceTree = "<group>"; };
+		990790F91D69166E00ABCA08 /* FeedTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableViewCell.swift; sourceTree = "<group>"; };
+		996E69741D7A376B005A662B /* KeywordListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeywordListener.swift; sourceTree = "<group>"; };
+		996E69761D7A504B005A662B /* KeyTermCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyTermCell.swift; sourceTree = "<group>"; };
+		996E69781D7A9115005A662B /* NewKeyword.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewKeyword.swift; sourceTree = "<group>"; };
+		998864B31D6D832A00841EDF /* FeedCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedCollectionCell.swift; sourceTree = "<group>"; };
+		998864B51D6FB6A300841EDF /* CollegeChooserTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollegeChooserTableView.swift; sourceTree = "<group>"; };
+		99993DE71D6A5CDA0031A885 /* NewChanges.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NewChanges.txt; sourceTree = "<group>"; };
+		99993DEA1D6B71040031A885 /* ServiceAccount.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ServiceAccount.json; sourceTree = "<group>"; };
+		99993DEC1D6B87370031A885 /* SearchBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBarController.swift; sourceTree = "<group>"; };
+		99993DEE1D6BFD1C0031A885 /* AdminFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdminFunctions.swift; sourceTree = "<group>"; };
+		99F258D41D74E90D0058DD03 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A9B5AA308BD3716401700AEC /* Pods-Authtest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Authtest.release.xcconfig"; path = "Pods/Target Support Files/Pods-Authtest/Pods-Authtest.release.xcconfig"; sourceTree = "<group>"; };
 		E795DBB14D2592EBAA839B24 /* Pods_Authtest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Authtest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -113,10 +173,12 @@
 				2B5F206B1D2C6ED200724E76 /* Album.swift */,
 				2B1F04931D21CAE200177672 /* AlbumImages.swift */,
 				2B5F206D1D2C6EF200724E76 /* CollectionViewCell.swift */,
-				2B1F04911D21CAE200177672 /* CloseUp.swift */,
+				2BAC6FB41D302ABE00077D83 /* CloseUp.swift */,
 				2B1F048E1D21CAE200177672 /* EditProfile.swift */,
 				2B1F048D1D21CAE200177672 /* ProfileViewController.swift */,
 				2B1F048F1D21CAE200177672 /* ViewItems.swift */,
+				2BB77F071D516B3F0027B207 /* ViewPurchased.swift */,
+				2BB77F051D515F8B0027B207 /* viewSold.swift */,
 				2B1F04901D21CAE200177672 /* ViewItemsCell.swift */,
 				2B1F04921D21CAE200177672 /* ViewAlbum.swift */,
 			);
@@ -157,6 +219,7 @@
 		2BBFA2B31D0F725600D735B1 = {
 			isa = PBXGroup;
 			children = (
+				99993DE71D6A5CDA0031A885 /* NewChanges.txt */,
 				2BBFA2BE1D0F725600D735B1 /* Authtest */,
 				2BBFA2BD1D0F725600D735B1 /* Products */,
 				BA85D670CD4C49120E21D42E /* Pods */,
@@ -167,7 +230,7 @@
 		2BBFA2BD1D0F725600D735B1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2BBFA2BC1D0F725600D735B1 /* Authtest.app */,
+				2BBFA2BC1D0F725600D735B1 /* Bazaar.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -180,21 +243,48 @@
 				2B95BFF21D1E034200693203 /* Categories */,
 				2B7F74371D186A8600CF7DE2 /* SWRevealViewController */,
 				2BBFA2BF1D0F725600D735B1 /* AppDelegate.swift */,
-				2BBFA2C11D0F725600D735B1 /* ViewController.swift */,
-				2BBFA2C61D0F725600D735B1 /* Assets.xcassets */,
 				2B59680B1D2EDD0C00E038D7 /* Main.storyboard */,
 				2BBFA2C81D0F725600D735B1 /* LaunchScreen.storyboard */,
-				2B5F20751D2D6EB800724E76 /* GoogleService-Info.plist */,
+				2BBFA2C61D0F725600D735B1 /* Assets.xcassets */,
+				99F258D41D74E90D0058DD03 /* GoogleService-Info.plist */,
+				2BAD3AC21D41A23300191154 /* FullScreenViewController.swift */,
 				2BBFA2CB1D0F725600D735B1 /* Info.plist */,
+				99993DEA1D6B71040031A885 /* ServiceAccount.json */,
 				2BFAFAB31D106D9900CD1EA8 /* CreateAccountViewController.swift */,
 				2BDA773E1D19B791005D73F5 /* ChatViewController.swift */,
-				2BAF0F251D1B2EA500BDBC9E /* ConversationTableViewController.swift */,
-				2B5F206F1D2C6F2000724E76 /* FeedController.swift */,
-				2BE221E11D25C622001C3536 /* FeedCollectionViewCell.swift */,
+				2BAC6FB81D302B6D00077D83 /* ConversationTableViewController.swift */,
+				2BAC6FB61D302AFF00077D83 /* contactsCell.swift */,
+				2BAD3AC81D41ABD600191154 /* NotificationsHandler.swift */,
+				2BAD3AC41D41ABC600191154 /* NotificationCell.swift */,
 				2B5F20711D2C6F5C00724E76 /* Item.swift */,
+				2BAD3AC61D41ABD000191154 /* NotificationsPage.swift */,
 				2BFAFAB71D10B97A00CD1EA8 /* MapViewController.swift */,
 				2B928B121D11F2A100EB8FB4 /* MapTasks.swift */,
 				2B5F20671D27214000724E76 /* TabBarController.swift */,
+				2BBFA2C11D0F725600D735B1 /* ViewController.swift */,
+				2BBA19D61D55422000264157 /* Settings.swift */,
+				2BBA19D71D55422000264157 /* CollegeChooser.swift */,
+				2BBA19D81D55422000264157 /* WordReader.swift */,
+				2BBA19D91D55422000264157 /* collegesPlain.txt */,
+				2BBA19DB1D55422000264157 /* collegeList.txt */,
+				2BBA19DC1D55422000264157 /* collegeListFormatter.py */,
+				2BDFE98D1D569751004087BC /* VerifyCollegeViewController.swift */,
+				2BDFE98F1D569769004087BC /* UnknownCollegeViewController.swift */,
+				2BDFE9911D58E8DB004087BC /* EmailDomainGetter.swift */,
+				2BDFE9931D58EDED004087BC /* Global.swift */,
+				2BEB84B81D5B9C6700EA6F0A /* RatingViewController.swift */,
+				2D18C7BA1D650B5C0022F2CA /* File.swift */,
+				990790F71D683A7E00ABCA08 /* ItemTableViewController.swift */,
+				99993DEC1D6B87370031A885 /* SearchBarController.swift */,
+				99993DEE1D6BFD1C0031A885 /* AdminFunctions.swift */,
+				2B5F206F1D2C6F2000724E76 /* FeedController.swift */,
+				990790F91D69166E00ABCA08 /* FeedTableViewCell.swift */,
+				998864B31D6D832A00841EDF /* FeedCollectionCell.swift */,
+				998864B51D6FB6A300841EDF /* CollegeChooserTableView.swift */,
+				996E69741D7A376B005A662B /* KeywordListener.swift */,
+				996E69761D7A504B005A662B /* KeyTermCell.swift */,
+				996E69781D7A9115005A662B /* NewKeyword.swift */,
+				419995E01D9270D8009D949B /* ReportViewController.swift */,
 			);
 			path = Authtest;
 			sourceTree = "<group>";
@@ -221,6 +311,7 @@
 				2BBFA2BA1D0F725600D735B1 /* Resources */,
 				BAE51BE0F29344BFBC4372B0 /* [CP] Embed Pods Frameworks */,
 				A033E60CD7439FCB231B4D0A /* [CP] Copy Pods Resources */,
+				99993DE91D6B70220031A885 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -228,7 +319,7 @@
 			);
 			name = Authtest;
 			productName = Authtest;
-			productReference = 2BBFA2BC1D0F725600D735B1 /* Authtest.app */;
+			productReference = 2BBFA2BC1D0F725600D735B1 /* Bazaar.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -238,12 +329,20 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = CSSummer16;
 				TargetAttributes = {
 					2BBFA2BB1D0F725600D735B1 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = Y2GBMPFH96;
+						DevelopmentTeam = FPDCRD54AS;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -271,14 +370,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				2BBFA2CA1D0F725600D735B1 /* LaunchScreen.storyboard in Resources */,
-				2B5F20761D2D6EB800724E76 /* GoogleService-Info.plist in Resources */,
 				2B1F049C1D21CB6D00177672 /* icon-user-default.png in Resources */,
 				2B1F04851D21CA5200177672 /* flower-1364746_1280.jpg in Resources */,
 				2B1F04861D21CA5200177672 /* water-lily-1442497_1920.jpg in Resources */,
+				2BBA19E11D55422000264157 /* collegesPlain.txt in Resources */,
+				2BBA19E41D55422000264157 /* collegeListFormatter.py in Resources */,
 				2B1F04841D21CA5200177672 /* rubber-duck-1401225_1920.jpg in Resources */,
 				2B1F04831D21CA5200177672 /* PrettySunset.jpg in Resources */,
+				2BBA19E31D55422000264157 /* collegeList.txt in Resources */,
+				99993DEB1D6B71040031A885 /* ServiceAccount.json in Resources */,
 				2B59680C1D2EDD0C00E038D7 /* Main.storyboard in Resources */,
+				99993DE81D6A5CDA0031A885 /* NewChanges.txt in Resources */,
 				2BBFA2C71D0F725600D735B1 /* Assets.xcassets in Resources */,
+				99F258D51D74E90D0058DD03 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,6 +403,19 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
+		};
+		99993DE91D6B70220031A885 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#Not sure what the shell does\n# Replace this path with the path to the key you just downloaded\n#JSON_FILE=Authtest/ServiceAccount.json\n\n# Got this GOOGLE_APP_ID from our GoogleService-Info.plist file\n#GOOGLE_APP_ID=1:98205665216:ios:c2a219928478883c\n\n#defaults write com.google.SymbolUpload version -integer 1   # creates file if it does not exist\n#JSON=$(cat \"${JSON_FILE}\")\n#/usr/bin/plutil -replace \"app_${GOOGLE_APP_ID//:/_}\" -json \"${JSON}\" \"$HOME/Library/Preferences/com.google.SymbolUpload.plist\"\n#\"${PODS_ROOT}\"/FirebaseCrash/upload-sym";
 		};
 		A033E60CD7439FCB231B4D0A /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -338,27 +455,52 @@
 			buildActionMask = 2147483647;
 			files = (
 				2BFAFAB41D106D9900CD1EA8 /* CreateAccountViewController.swift in Sources */,
+				2BEB84B91D5B9C6900EA6F0A /* RatingViewController.swift in Sources */,
 				2B1F049A1D21CAE200177672 /* AlbumImages.swift in Sources */,
+				2BAD3AC91D41ABD600191154 /* NotificationsHandler.swift in Sources */,
+				2BDFE9921D58E8DB004087BC /* EmailDomainGetter.swift in Sources */,
+				99993DEF1D6BFD1C0031A885 /* AdminFunctions.swift in Sources */,
+				2BDFE9901D569769004087BC /* UnknownCollegeViewController.swift in Sources */,
+				99993DED1D6B87370031A885 /* SearchBarController.swift in Sources */,
+				2BAC6FB91D302B6D00077D83 /* ConversationTableViewController.swift in Sources */,
 				2B5F206E1D2C6EF200724E76 /* CollectionViewCell.swift in Sources */,
 				2B1F04961D21CAE200177672 /* ViewItems.swift in Sources */,
+				2BAD3AC31D41A23300191154 /* FullScreenViewController.swift in Sources */,
+				2D18C7BB1D650B5C0022F2CA /* File.swift in Sources */,
 				2B5F20721D2C6F5C00724E76 /* Item.swift in Sources */,
+				2BBA19E01D55422000264157 /* WordReader.swift in Sources */,
+				998864B61D6FB6A300841EDF /* CollegeChooserTableView.swift in Sources */,
 				2B7F74451D18A0F000CF7DE2 /* CategoryCellWithButton.swift in Sources */,
-				2BAF0F261D1B2EA500BDBC9E /* ConversationTableViewController.swift in Sources */,
+				2BAC6FB71D302AFF00077D83 /* contactsCell.swift in Sources */,
 				2B5F206A1D2C6EC300724E76 /* AddNewItem.swift in Sources */,
+				2BAD3AC51D41ABC600191154 /* NotificationCell.swift in Sources */,
+				419995E11D9270D8009D949B /* ReportViewController.swift in Sources */,
+				2BBA19DF1D55422000264157 /* CollegeChooser.swift in Sources */,
 				2B5F20701D2C6F2000724E76 /* FeedController.swift in Sources */,
 				2B1F04951D21CAE200177672 /* EditProfile.swift in Sources */,
+				996E69751D7A376B005A662B /* KeywordListener.swift in Sources */,
+				2BDFE9941D58EDED004087BC /* Global.swift in Sources */,
 				2BDA773F1D19B791005D73F5 /* ChatViewController.swift in Sources */,
 				2BBFA2C21D0F725600D735B1 /* ViewController.swift in Sources */,
 				2B5F20681D27214000724E76 /* TabBarController.swift in Sources */,
-				2BE221E21D25C622001C3536 /* FeedCollectionViewCell.swift in Sources */,
+				990790FA1D69166E00ABCA08 /* FeedTableViewCell.swift in Sources */,
 				2B7F74411D186B5300CF7DE2 /* SWRevealViewController.m in Sources */,
 				2B1F04991D21CAE200177672 /* ViewAlbum.swift in Sources */,
+				2BB77F061D515F8B0027B207 /* viewSold.swift in Sources */,
 				2B928B131D11F2A100EB8FB4 /* MapTasks.swift in Sources */,
 				2B1F04971D21CAE200177672 /* ViewItemsCell.swift in Sources */,
+				2BAD3AC71D41ABD000191154 /* NotificationsPage.swift in Sources */,
+				2BAC6FB51D302ABE00077D83 /* CloseUp.swift in Sources */,
 				2B7F74431D186CF300CF7DE2 /* CategoriesTableViewController.swift in Sources */,
-				2B1F04981D21CAE200177672 /* CloseUp.swift in Sources */,
+				2BBA19DE1D55422000264157 /* Settings.swift in Sources */,
+				2BB77F081D516B3F0027B207 /* ViewPurchased.swift in Sources */,
+				990790F81D683A7E00ABCA08 /* ItemTableViewController.swift in Sources */,
 				2B1F04941D21CAE200177672 /* ProfileViewController.swift in Sources */,
 				2BFAFAB81D10B97A00CD1EA8 /* MapViewController.swift in Sources */,
+				996E69791D7A9115005A662B /* NewKeyword.swift in Sources */,
+				2BDFE98E1D569751004087BC /* VerifyCollegeViewController.swift in Sources */,
+				998864B41D6D832A00841EDF /* FeedCollectionCell.swift in Sources */,
+				996E69771D7A504B005A662B /* KeyTermCell.swift in Sources */,
 				2BBFA2C01D0F725600D735B1 /* AppDelegate.swift in Sources */,
 				2B5F206C1D2C6ED200724E76 /* Album.swift in Sources */,
 			);
@@ -392,8 +534,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -437,8 +581,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -457,6 +603,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -465,17 +612,25 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3D09CF547DE81DC1BAC7883B /* Pods-Authtest.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = FPDCRD54AS;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Authtest/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.projectIsAnnoying.mguillory.Authtest.changedagain;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bazaar.app.version.1.1;
+				PRODUCT_NAME = Bazaar;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Authtest/Authtest-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -483,16 +638,24 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A9B5AA308BD3716401700AEC /* Pods-Authtest.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = FPDCRD54AS;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Authtest/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.projectIsAnnoying.mguillory.Authtest.changedagain;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bazaar.app.version.1.1;
+				PRODUCT_NAME = Bazaar;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Authtest/Authtest-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};

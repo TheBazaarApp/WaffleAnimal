@@ -96,6 +96,12 @@ static CGFloat scaledValue( CGFloat v1, CGFloat min2, CGFloat max2, CGFloat min1
 
         [self addSubview:_frontView];
     }
+//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 50.0f)];
+//    CAGradientLayer *gradient = [CAGradientLayer layer];
+//    gradient.frame = view.bounds;
+//    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor whiteColor] CGColor], (id)[[UIColor blackColor] CGColor], nil];
+//    [view.layer insertSublayer:gradient atIndex:0];
+//    //use startPoint and endPoint to change direction of gradient (http://stackoverflow.com/a/20387923/2057171)
     return self;
 }
 

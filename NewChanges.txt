@@ -1,0 +1,70 @@
+CHANGES
+
+
+New changes: 8/22/16, by Olivia
+
+
+FILES CHANGED:
+
+(find specific changes using Diffchecker)
+
+Got rid of FeedController Cell 
+Got rid of FeedCell (this one might not be present in the previous version)
+Created ItemTableViewController
+Created FeedTableViewCell
+FeedController
+CollectionViewCell
+CategoriesTableViewController
+Album
+Item
+AddNewItem
+AppDelegate
+Podfile (although I wasn’t able to pod install)
+ViewItemsCell
+Global
+ProfileViewController
+ViewItems
+ViewAlbum
+ViewPurchased
+ViewSold
+AlbumImages
+ChatViewController
+CloseUp
+NotificationsPage
+xcassets (added an app icon, added a Default Album pic)
+Added service account file
+Added service account lines of code on app info home screen (or whatever it’s called)
+Created SearchBarTableViewController
+MapViewController
+EditProfile
+ConversationTableViewController
+RamReelView
+UnknownCollegeViewController
+
+
+
+
+STORYBOARD CHANGES:
+
+(there are a lot of these, so it’s probably easiest just to copy any new changes into this storyboard)
+
+ViewItems -> Added new cells, might have changed constraints on others
+ViewAlbums -> Added new cells, might have changed constraints on others
+SoldItems -> Added new cells, might have changed constraints on others
+PurchasedItems -> Added new cells, might have changed constraints on others
+AlbumImages -> Added new cells, might have changed constraints on others
+Changed segues: redRidingHood, showPurchases (which is now called zira), cruel, sebastien, all segues going to the feed
+CloseUp -> new outlet, new name for the view controller, new default pic
+Settings -> removed one of the two outlets attached to the emails switch
+EditProfile -> different default pic
+FeedCollectionView -> deleted
+FeedTableViewController -> created to replace the collection view
+Feed Navigation controller -> changed name
+AddNewItem -> new constraints, new color for default loc
+Profile -> Swapped unsoldItems outlets 2 and 3, changed text of editProfile button
+Closeup -> changed ... (view more) outlet name
+MapViewController -> Condensed left two options into 1
+
+
+
+
