@@ -23,6 +23,7 @@
 import UIKit
 import Firebase
 import JSQMessagesViewController
+import OneSignal
 
 class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -47,6 +48,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     let myUID = FIRAuth.auth()!.currentUser!.uid
     var otherPersonsCollege: String?
     var sendable = true
+    var holder = IDHolder()
     
     
     private var localTyping = false
@@ -74,8 +76,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         self.hideKeyboardWhenTappedAround()
         getOtherPersonsCollege()
         observeMessages()
-        
-        
+        mainClass.getNotificationID(receiveruid, holder: holder)
         deleteNotification()
     }
     
@@ -115,8 +116,6 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     }
     
     
-    
-    
     func deleteNotification() {
         let pathToNotification = rootRef.child("\(myCollege)/user/\(senderId!)/notifications/\(receiveruid)")
         pathToNotification.removeValue()
@@ -124,7 +123,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     
     
     
-
+    
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
@@ -285,7 +284,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     }
     
     
-
+    
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
@@ -338,6 +337,8 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
                 "type" : "MessageReceived",
                 "receiveruid": senderId!,
                 "receiver": senderDisplayName!]
+            
+            OneSignal.postNotification(["contents": ["en": text], "headings": ["en": "\(senderDisplayName) messaged you!"], "include_player_ids": [holder.id]])
             
             
             let childUpdates = [itemRefSender : messageItem,
@@ -421,14 +422,11 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     
     private func observeTyping() {
         let typingIndicatorRef = rootRef.child("\(otherPersonsCollege!)/user/\(receiveruid)/messages/all/typingIndicator")
-        print("other person's ref: \(typingIndicatorRef)")
         userIsTypingRef = rootRef.child("\(myCollege)/user/\(myUID)/messages/all/typingIndicator")
-            print("my ref \(userIsTypingRef)")
-            typingIndicatorRef.onDisconnectRemoveValue()
+        typingIndicatorRef.onDisconnectRemoveValue()
         
         ///usersTypingQuery = typingIndicatorRef.queryOrderedByValue().queryEqualToValue(true)
         typingListener = typingIndicatorRef.observeEventType(.Value, withBlock: { snapshot in
-            print("snapshot is \(snapshot.value)")
             if let typing = snapshot.value as? Bool {
                 if typing {
                     self.showTypingIndicator = true
@@ -444,8 +442,8 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     }
     
     
-
-
+    
+    
     
     
     func addMessage(id: String, text: String) {

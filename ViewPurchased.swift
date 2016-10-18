@@ -133,7 +133,6 @@ class ViewPurchased: ItemTableViewController {
                 controller.category = "purchased"
                 controller.imageID = item?.imageKey
                 controller.sellerUID = item!.uid
-                print("sellercollege is \(item!.sellerCollege) and uid is \(item!.uid)")
                 controller.sellerCollege = item?.sellerCollege
                 controller.albumID = item!.albumKey!
                 controller.location = "default location"

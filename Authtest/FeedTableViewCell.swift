@@ -12,10 +12,10 @@ class FeedTableViewCell: UITableViewCell {
     
     @IBOutlet weak var priceLabelNormal: UILabel!
     @IBOutlet weak var stickerNormal: UIImageView!
-    @IBOutlet weak var normalCollectionView: UICollectionView!
+    @IBOutlet weak var normalCollectionView: FeedCollectionView!
     
     
-    @IBOutlet weak var isoCollectionView: UICollectionView!
+    @IBOutlet weak var isoCollectionView: FeedCollectionView!
     @IBOutlet weak var isoSticker: UIImageView!
     @IBOutlet weak var isoPriceLabel: UILabel!
     
@@ -26,26 +26,26 @@ class FeedTableViewCell: UITableViewCell {
     let filledCircle = UIImageView(image: UIImage(named: "ic_lens_18pt")?.imageWithRenderingMode(.AlwaysTemplate))
     var currIndex: Int?
     var shouldSnap = false
-    var collectionView: UICollectionView!
+    var feedCollectionView: FeedCollectionView!
     var priceLabel: UILabel!
     var sticker: UIImageView!
     
     
-
+    
     
     
     func linkItems() {
         if normalCollectionView != nil {
-            collectionView = normalCollectionView!
+            feedCollectionView = normalCollectionView!
             priceLabel = priceLabelNormal
             sticker = stickerNormal
         }
         if isoCollectionView != nil {
-            collectionView = isoCollectionView!
+            feedCollectionView = isoCollectionView!
             priceLabel = isoPriceLabel
             sticker = isoSticker
         }
-       
+        
     }
     
     
@@ -62,10 +62,10 @@ class FeedTableViewCell: UITableViewCell {
         showPrice(currentAlbum!.visibleItemIndex, isAlbumView: isAlbumView)
         setDots(currentAlbum!.visibleItemIndex)
     }
-
     
     
-   
+    
+    
     func setDots(index: Int) {
         removeDots()
         let numDots = currentAlbum!.unsoldItems.count
@@ -124,6 +124,7 @@ class FeedTableViewCell: UITableViewCell {
     
     
     func showPrice(index: Int, isAlbumView: Bool) {
+        print("showPrice called")
         var item: Item!
         if isAlbumView {
             item = currentAlbum!.unsoldItems[index]
@@ -137,7 +138,7 @@ class FeedTableViewCell: UITableViewCell {
             priceString += String(Int(price))
         }
         else {
-             priceString += String(price)
+            priceString += String(price)
         }
         if price == 0 || price == -0.1134 {
             if item.tag == "In Search Of" {
@@ -154,15 +155,23 @@ class FeedTableViewCell: UITableViewCell {
     
     func setCollectionViewDataSourceDelegate
         <D: protocol<UICollectionViewDataSource, UICollectionViewDelegate>> //TODO: Learn what this is actually doing
-        (dataSourceDelegate: D, row: Int) {
+        (dataSourceDelegate: D, row: Int, tvc: FeedTableViewCell) {
         
-        collectionView.delegate = dataSourceDelegate
-        collectionView.dataSource = dataSourceDelegate
-        collectionView.tag = row
-        collectionView.reloadData()
+        feedCollectionView.delegate = dataSourceDelegate
+        feedCollectionView.dataSource = dataSourceDelegate
+        feedCollectionView.tag = row
+        print("making sure stuff exists")
+        print("-- self--")
+        print(self)
+        print("---feedcollectionview---")
+        print(feedCollectionView)
+        print("-- type--")
+        // print(feedCollectionView.dynamicType)
+        feedCollectionView.ftvc = tvc
+        feedCollectionView.reloadData()
     }
     
-
+    
     
     
     

@@ -61,7 +61,6 @@ class ViewItems: ItemTableViewController {
         newItem.albumKey = itemInfoDict!["albumKey"] as? String
         newItem.albumName = itemInfoDict!["albumName"] as? String
         newItem.itemName = itemInfoDict!["name"] as! String
-        print("item name is \(newItem.itemName)")
         newItem.tag = itemInfoDict!["tag"] as! String
         newItem.itemDescription = itemInfoDict!["description"] as! String
         newItem.sellerCollege = college

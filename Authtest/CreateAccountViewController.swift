@@ -25,7 +25,8 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
     var collegeName: String?
     var currentlySaving = false
     var ref = FIRDatabase.database().reference()
-    
+    var notificationsID = ""
+
     
     //MARK: SETUP FUNCTIONS
     
@@ -107,14 +108,11 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
                     
                     FIRAuth.auth()?.createUserWithEmail(emailField.text!, password: passwordField.text!, completion: {
                         user, error in
-                        print("creating user")
                         if let error = error {
                             mainClass.simpleAlert("Error Creating User", message: error.localizedDescription, viewController: self)
-                            print("error")
                             self.currentlySaving = false
                         } else {
                         FIRAuth.auth()?.currentUser?.sendEmailVerificationWithCompletion({ error in
-                            print("sending verification email")
                             if let error = error {
                                 mainClass.simpleAlert("Error Sending Verification Email", message: error.localizedDescription, viewController: self)
                             }
@@ -155,7 +153,11 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
             }
             
             self.ref.child("\(mainClass.domainBranch!)/user/\(user.uid)/profile/name").setValue(nameField.text! + " " + lastNameField.text!)
-            self.ref.child("users").updateChildValues([user.uid : mainClass.domainBranch!])
+            
+            let userInfo = ["collegeDomain": mainClass.domainBranch!,
+                            "notificationsID": notificationsID]
+            
+            self.ref.child("users/\(user.uid)").setValue(userInfo)
             
         }
     }
@@ -163,7 +165,6 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
     
     
     func getCollegeName(repetitions: Int) {
-        print("college name")
         if let collegeName = mainClass.collegeName { //name is recognized
             self.collegeName = collegeName
             self.performSegueWithIdentifier("mushu", sender: nil) //Go to verify college
@@ -175,7 +176,6 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
                 })
             }
             else {
-                print("should be showing the popup")
                 let ac = UIAlertController(title: "Email Domain Not Recognized", message: "On the next screen, please type in your college.", preferredStyle: .Alert)
                 ac.addAction(UIAlertAction(title: "Okay", style: .Default, handler: { (UIAlertAction) -> Void in
                     self.performSegueWithIdentifier("mufasa", sender: nil)

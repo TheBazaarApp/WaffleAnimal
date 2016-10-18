@@ -9,7 +9,7 @@
 import UIKit
 
 class FeedCollectionCell: UICollectionViewCell {
-
+    
     @IBOutlet weak var normalImage: UIImageView!
     
     @IBOutlet weak var isoPicImage: UIImageView!

@@ -43,7 +43,7 @@ class ItemTableViewController: SearchBarTableViewController {
     
     
     
-
+    
     
     
     func showLoadingCircle() {
@@ -174,7 +174,7 @@ class ItemTableViewController: SearchBarTableViewController {
     
     
     //Access the database to get all of that user's items
-    func childAddedListener(path: String){
+    func childAddedListener(path: String) {
         //Get items from the database and storage
         let dataRef = self.ref.child(path).queryOrderedByChild("timestamp")
         
@@ -186,7 +186,6 @@ class ItemTableViewController: SearchBarTableViewController {
             self.index = self.index + 1
             if newItem.hasPic {
                 self.picsComing = true
-                print("about to get image")
                 self.getActualImages(self.index - 1) //Get actual images from storage
                 
             } else {
@@ -196,7 +195,7 @@ class ItemTableViewController: SearchBarTableViewController {
                     newItem.picture = mainClass.defaultPic(newItem.tag)
                 }
             }
-            
+            self.tableView.reloadData()
         })
     }
     
@@ -262,7 +261,6 @@ class ItemTableViewController: SearchBarTableViewController {
     
     
     func getActualImages(index: Int){
-        print("getting image")
         let item = self.items[index]!
         let imageRef = self.storageRef.child("\(item.sellerCollege!)/user/\(item.uid!)/images/\(item.imageKey)") //Path to the image in storage
         imageRef.downloadURLWithCompletion{ (URL, error) -> Void in  //Download the image
@@ -283,7 +281,6 @@ class ItemTableViewController: SearchBarTableViewController {
                             if let picData = NSData(contentsOfURL: URL!) { //The pic!!!
                                 let image = UIImage(data: picData)!
                                 item.picture = image
-                                print("got a pic!")
                             } else {
                                 if self!.isAlbumView {
                                     item.picture = UIImage(named: "Album Default")
@@ -323,7 +320,7 @@ class ItemTableViewController: SearchBarTableViewController {
     }
     
     
-
+    
     
     deinit {
         ref.removeObserverWithHandle(itemAddedListener!)
@@ -334,3 +331,4 @@ class ItemTableViewController: SearchBarTableViewController {
     
     
 }
+

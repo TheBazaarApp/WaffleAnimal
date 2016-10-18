@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import OneSignal
 
 class ReportViewController: UIViewController {
 
@@ -25,7 +26,7 @@ class ReportViewController: UIViewController {
     let senderID = mainClass.uid!
     let senderCollege = mainClass.domainBranch!
     let ref = mainClass.ref
-    
+    let sellerHolder = IDHolder()
     
     
     override func viewDidLoad() {
@@ -36,6 +37,9 @@ class ReportViewController: UIViewController {
         reasonField.layer.borderWidth = 4.0
         itemLabel.text = itemName
         sellerLabel.text = sellerName
+        mainClass.getNotificationID(sellerID, holder: sellerHolder)
+
+        
     }
     
     
@@ -70,6 +74,8 @@ class ReportViewController: UIViewController {
             "senderCollege": senderCollege,
             "albumID": albumID
         ]
+        
+        OneSignal.postNotification(["contents": ["en": "Please review the item. Note that our team will also review the item."], "headings": ["en": "Your \(itemName) got reported :("], "include_player_ids": [sellerHolder.id]])
         
         let childUpdates = [reportedPath: notificationInfo,
                             adminReportedPath: adminNotificationInfo]

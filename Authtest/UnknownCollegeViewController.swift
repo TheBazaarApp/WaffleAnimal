@@ -95,7 +95,6 @@ class UnknownCollegeViewController: UIViewController {
         
         if segue.identifier == "kristoff" { //Called if you selected your college as a new college
             if let destination = segue.destinationViewController as? CollegeChooser {
-                print("segueing, segueloc is first time")
                 destination.segueLoc = "firstTime"
             }
         }

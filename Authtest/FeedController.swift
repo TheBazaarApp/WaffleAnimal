@@ -1,4 +1,6 @@
 //
+//  FeedViewController.swift - NEWEST VERSION I THINK
+//
 //  FeedViewController.swift
 //  Authtest
 //
@@ -43,13 +45,12 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
     var loadingBackground = UIView()
     var overlayBackground = UIView()
     var notFoundLabel = UILabel()
-    var pleaseDontWork = [FeedTableViewCell]()
     
     
     //MARK: SETUP
     
     override func viewDidLoad() {
-        //showLoadingCircle() //TODO: add back in
+        showLoadingCircle()
         homeController = self
         super.viewDidLoad()
         hideKeyboardWhenTappedAround()
@@ -57,7 +58,7 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
         //Create ways to open the sidebar menu
         let button: UIButton = UIButton(type: UIButtonType.Custom)
         let menuImage = UIImage(named: "ic_menu")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-        button.tintColor = mainClass.ourGold //TODO: Choose better name for this!
+        button.tintColor = mainClass.ourGold
         button.setImage(menuImage, forState: UIControlState.Normal)
         button.frame = CGRectMake(0, 0, 30, 30)
         button.addTarget(self, action: #selector(toggleMenu), forControlEvents: UIControlEvents.TouchUpInside)
@@ -133,9 +134,9 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
     
     
     func hideNow() {
-        //        loadingCircle.stopAnimation() //TODO: add this back in
-        //        loadingCircle.removeFromSuperview()
-        //        loadingBackground.removeFromSuperview()
+        loadingCircle.stopAnimation()
+        loadingCircle.removeFromSuperview()
+        loadingBackground.removeFromSuperview()
     }
     
     
@@ -192,8 +193,7 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         
         let tableViewCell = cell as! FeedTableViewCell
-        tableViewCell.setCollectionViewDataSourceDelegate(self, row: indexPath.row)
-        print("will display a tableview cell")
+        tableViewCell.setCollectionViewDataSourceDelegate(self, row: indexPath.row, tvc: tableViewCell)
     }
     
     
@@ -353,11 +353,8 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
     
     func createChildChangedListener(feed: FIRDatabaseQuery, college: String) {
         let albumChangedListener = feed.observeEventType(FIRDataEventType.ChildChanged, withBlock: { (snapshot) in
-            //let triggerTime = (Int64(NSEC_PER_SEC) * 2)
-            //dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), { () -> Void in
-            print("child changed!!!")
             let albumID = snapshot.key
-            
+            print("child changed")
             for album in self.albums { //Loop through albums, find matching album
                 if album.albumID == albumID { //If they're the same album
                     
@@ -385,7 +382,6 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
                     
                     if let unsoldItems = snapshot.value!["unsoldItems"] as? [String : AnyObject] {
                         for (imageKey,newItem) in unsoldItems { //Loop through new items; if you have an item which matches, update it's data
-                            //let imageKey = newItem["imageKey"] as! String
                             var foundMatch = false
                             for i in 0..<album.unsoldItems.count {//Loop through items currently in the album, see if they match
                                 let currItem = album.unsoldItems[i]
@@ -428,6 +424,7 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
                         //No unsold items, so delete the album
                         self.ref.child("\(college)/albums/\(albumID)").removeValue()
                         if let albumDetails = snapshot.value!["albumDetails"] as? [String : AnyObject] {
+                            print("deleting an empty album")
                             let sellerID = albumDetails["sellerID"] as! String
                             self.ref.child("\(college)/user/\(sellerID)/albums/\(albumID)").removeValue()
                         }
@@ -440,16 +437,17 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
                         if currentItemMatches[i] == false { //If they don't have a match, you know you have to delete something from allItems
                             let item = album.unsoldItems[i]
                             album.unsoldItems.removeAtIndex(i)
-                            print("removed from unsold items")
                             
                             //Loop through allItems, if you find the item you want to remove, delete it!
                             for (index,testItem) in self.allItems.enumerate().reverse() {
                                 if testItem.imageKey == item.imageKey { //If the imageKeys match, assume they're the same
                                     self.allItems.removeAtIndex(index)
-                                    print("removed from allItems")
                                 }
                             }
                         }
+                    }
+                    if !self.showAlbums || self.searchBarActive {
+                        self.filterContentForSearchText(self.searchBar!.text!)
                     }
                 }
             }
@@ -457,7 +455,6 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
                 self?.tableView?.reloadData()
             }
         })
-        //    })
         listeners.append(albumChangedListener)
     }
     
@@ -465,7 +462,7 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
     
     func createChildRemovedListener(feed: FIRDatabaseQuery) {
         let albumRemovedListener = feed.observeEventType(FIRDataEventType.ChildRemoved, withBlock: { (snapshot) in
-            print("item got removed")
+            print("child removed")
             let albumID = snapshot.key
             
             var album: Album?
@@ -481,24 +478,20 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
             for (index, item) in self.allItems.enumerate().reverse() {
                 if item.album == album {
                     self.allItems.removeAtIndex(index)
-                    print("removed from all items")
                 }
             }
             
-            if !self.showAlbums {
-                self.filterByCategory(self.category)
-            }
-            if self.searchBarActive {
+            if !self.showAlbums || self.searchBarActive {
                 self.filterContentForSearchText(self.searchBar!.text!)
             }
             
             dispatch_barrier_async(self.queue) {
                 if let album = album {
+                    print("deleting album fro array")
                     self.albums.removeAtIndex(self.albums.indexOf(album)!)
-                    
+                    self.tableView!.reloadData()
                 }
             }
-            self.tableView!.reloadData()
         })
         listeners.append(albumRemovedListener)
     }
@@ -539,7 +532,6 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
                         if self != nil {
                             dispatch_barrier_async(self!.queue) {
                                 item.picture = UIImage(data: picData)!
-                                print("got the pic")
                                 self!.hideLoadingCircle()
                             }
                         }
@@ -577,8 +569,8 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
             
             // return count
         }
-        //showNoResultsFound(count == 0) TODO: Add back in
-        print("the count is \(count)")
+        showNoResultsFound(count == 0)
+        print("numRows is \(count)")
         return count
     }
     
@@ -597,22 +589,18 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
     
     
     func getCurrentItem(index: Int) -> Item? {
-        print("called getCurrentItem")
         var currItem: Item?
         if searchBarActive || showAlbums == false {
             objc_sync_enter(self.categoryItems)
             currItem = categoryItems[index]
             objc_sync_exit(self.categoryItems)
-            return currItem
+            
         } else {
             if let currAlbum = getCurrentAlbum(index) {
-                print ("imageindex is \(currAlbum.imageIndex) but unsold items is only \(currAlbum.unsoldItems.count)")
-                if currAlbum.unsoldItems.count > currAlbum.imageIndex {
-                    return currAlbum.unsoldItems[currAlbum.imageIndex] //TODO: Crashed when I deleted the second item in the album, going decently fast. //TODO: Also crashed when another person bought the last item on the feed
-                }
+                currItem = currAlbum.unsoldItems[currAlbum.imageIndex] //TODO: Crashed when I deleted the second item in the album, going decently fast.
             }
         }
-        return nil
+        return currItem
     }
     
     
@@ -630,7 +618,6 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
     //Specify what's in each cell
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         //Show Items
-        print("about to call getCurrentItem from cellForRow")
         if let currItem = getCurrentItem(indexPath.row) {
             var cell: FeedTableViewCell!
             
@@ -644,27 +631,26 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
             
             cell.removeDots()
             cell.linkItems()
-            cell.collectionView.allowsSelection = true
+            cell.feedCollectionView.allowsSelection = true
             cell.currentAlbum = currItem.album!
             if searchBarActive || !showAlbums {
                 cell.currentAlbum = currItem.album
-                cell.collectionView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
+                cell.feedCollectionView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
             } else {
                 cell.updateIndex(cell.currentAlbum!.visibleItemIndex)
-                cell.collectionView.setContentOffset(CGPoint(x: (self.view.frame.width + 10) * CGFloat(cell.currentAlbum!.visibleItemIndex), y: 0), animated: false)
+                cell.feedCollectionView.setContentOffset(CGPoint(x: (self.view.frame.width + 10) * CGFloat(cell.currentAlbum!.visibleItemIndex), y: 0), animated: false)
                 cell.shouldSnap = true
                 snap(cell, position: cell.currentAlbum!.visibleItemIndex)
-            }
-            if pleaseDontWork.count >= indexPath.row {
-                pleaseDontWork.append(cell)
-            } else {
-                pleaseDontWork[indexPath.row] = cell
             }
             
             return cell
         }
         return tableView.dequeueReusableCellWithIdentifier("normal", forIndexPath: indexPath) as! FeedTableViewCell
     }
+    
+    
+    
+    
     
     
     
@@ -688,7 +674,7 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
     override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         dragging = true
         let tableViewCell = getTableViewCell(scrollView.tag)
-        tableViewCell.shouldSnap = true
+        tableViewCell?.shouldSnap = true
     }
     
     
@@ -767,18 +753,13 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
             let tapRecognizer = UITapGestureRecognizer(target:self, action: #selector(toggleMenu)) //TODO:Change
             overlayBackground.addGestureRecognizer(tapRecognizer)
             tabBarController!.tabBar.userInteractionEnabled = false
-            
-            //            let swipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(toggleMenu))
-            //            swipeRecognizer.direction = UISwipeGestureRecognizerDirection.Right
-            //            overlayBackground.addGestureRecognizer(swipeRecognizer)
-            
             self.view.addSubview(overlayBackground)
             
             self.tableView.scrollEnabled = false
         } else {
             overlayBackground.removeFromSuperview()
             self.tableView.scrollEnabled = true
-            tabBarController!.tabBar.userInteractionEnabled = true
+            tabBarController!.tabBar.userInteractionEnabled = false
         }
     }
     
@@ -820,7 +801,8 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
         var cell: FeedCollectionCell!
         var item: Item!
         var album: Album!
-        let tableViewCell = getTableViewCell(collectionView.tag)
+        let cv = collectionView as! FeedCollectionView
+        let tableViewCell = cv.ftvc
         if !showAlbums || searchBarActive {
             item = tableViewCell.currentItem!
             album = tableViewCell.currentAlbum!
@@ -842,97 +824,80 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
         let tapRec = UITapGestureRecognizer(target:self, action: #selector(cellTapped2(_:)))
         cell.addGestureRecognizer(tapRec)
         cell.formatCell(item, album: album)
-        print("cell for items")
-        print(tableView.numberOfRowsInSection(0))
         return cell
     }
     
     
     
-    func getTableViewCell(row: Int) -> FeedTableViewCell {
-        print("really?  REALLY??")
-        //let tableViewIndexPath = NSIndexPath(forItem: row, inSection: 0)
-        //return tableView.cellForRowAtIndexPath(tableViewIndexPath) as? FeedTableViewCell
-        return pleaseDontWork[row]
+    func getTableViewCell(row: Int) -> FeedTableViewCell? {
+        
+        let tableViewIndexPath = NSIndexPath(forItem: row, inSection: 0)
+        return tableView.cellForRowAtIndexPath(tableViewIndexPath) as? FeedTableViewCell
     }
     
     
     
     func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-        print("ended displaying cell")
         if showAlbums && !searchBarActive {
             let cell = cell as! FeedCollectionCell
-            let tableViewCell = getTableViewCell(collectionView.tag)
-            let disappearingViewIndex = indexPath.item
-            let maxCount = cell.currentAlbum!.unsoldItems.count
-            let imageIndex = cell.currentAlbum!.imageIndex
-            if (disappearingViewIndex == 1 && imageIndex == 0) {
-                tableViewCell.shouldSnap = true
-                snap(tableViewCell, position: 0)
-            }
-            if (disappearingViewIndex == maxCount - 2 && imageIndex == maxCount - 1 ) { //If we're on the edge
-                tableViewCell.shouldSnap = true
-                snap(tableViewCell, position: maxCount - 1)
+            if let tableViewCell = getTableViewCell(collectionView.tag) {
+                let disappearingViewIndex = indexPath.item
+                let maxCount = cell.currentAlbum!.unsoldItems.count
+                let imageIndex = cell.currentAlbum!.imageIndex
+                if (disappearingViewIndex == 1 && imageIndex == 0) {
+                    tableViewCell.shouldSnap = true
+                    snap(tableViewCell, position: 0)
+                }
+                if (disappearingViewIndex == maxCount - 2 && imageIndex == maxCount - 1 ) { //If we're on the edge
+                    tableViewCell.shouldSnap = true
+                    snap(tableViewCell, position: maxCount - 1)
+                }
             }
         }
-        
     }
     
     
     func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-        let tableViewCell = getTableViewCell(collectionView.tag)
-        if !searchBarActive && showAlbums {
-            let oldIndex = tableViewCell.currentAlbum?.imageIndex
-            if indexPath.row > oldIndex { //Scrolling right (by moving thumb left)
-                snap(tableViewCell, position: indexPath.row - 1)
-            } else { //Scrolling left (by moving thumb right)
-                if indexPath.row < oldIndex {
-                    snap(tableViewCell, position: indexPath.row + 1)
+        if let tableViewCell = getTableViewCell(collectionView.tag) {
+            if !searchBarActive && showAlbums {
+                let oldIndex = tableViewCell.currentAlbum?.imageIndex
+                if indexPath.row > oldIndex { //Scrolling right (by moving thumb left)
+                    snap(tableViewCell, position: indexPath.row - 1)
+                } else { //Scrolling left (by moving thumb right)
+                    if indexPath.row < oldIndex {
+                        snap(tableViewCell, position: indexPath.row + 1)
+                    }
                 }
+            } else {
+                tableViewCell.showPrice(-1, isAlbumView: false) //price
             }
-        } else {
-            tableViewCell.showPrice(-1, isAlbumView: false)
+            tableViewCell.updateIndex(indexPath.item)
         }
-        tableViewCell.updateIndex(indexPath.item)
-        
     }
     
     
     func snap(tableViewCell: FeedTableViewCell, position: Int){
         if tableViewCell.shouldSnap {
             tableViewCell.currentAlbum?.visibleItemIndex = position
-            tableViewCell.showPrice(position, isAlbumView: true)
+            tableViewCell.showPrice(position, isAlbumView: true) //price
             tableViewCell.setDots(position)
         }
         if !dragging && tableViewCell.shouldSnap {
             tableViewCell.shouldSnap = false
             tableViewCell.updateIndex(position)
             tableViewCell.updateCellUI(true)
-            tableViewCell.collectionView.setContentOffset(CGPoint(x: (self.view.frame.width + 10) * CGFloat(position), y: 0), animated: true)
+            tableViewCell.feedCollectionView.setContentOffset(CGPoint(x: (self.view.frame.width + 10) * CGFloat(position), y: 0), animated: true)
         }
     }
     
-    //Test when snap is called
-    //Test whether problem is with albums vs individual items or whether it's related to everything below the first or what
-    //Test when the label gets updated.
-    //Test when things get shuffled.  Why would that be bad???
-    
-    
-    
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        print("tag is \(collectionView.tag)")
-        print("num is \(tableView.numberOfRowsInSection(0))")
-        let tableViewCell = getTableViewCell(collectionView.tag)
-        print("tableviewcell is \(tableViewCell)")
-        print("currentAlbum is \(tableViewCell.currentAlbum)")
-        if tableViewCell.currentAlbum!.isISO { //TODO: Crashed here!!!
-            //return CGSize(width: self.view.frame.width, height: self.view.frame.width - 85)
+        let cv = collectionView as! FeedCollectionView
+        let tableViewCell = cv.ftvc
+        if tableViewCell!.currentAlbum!.isISO {
             return CGSize(width: self.view.frame.width, height: self.view.frame.width - 55)
         }
-        
         return CGSize(width: self.view.frame.width, height: self.view.frame.width)
-        //return CGSize(width: self.view.frame.width, height: self.view.frame.width - 30)
     }
     
     
@@ -993,3 +958,5 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
         }
     }
 }
+
+

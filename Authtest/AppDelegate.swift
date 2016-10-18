@@ -11,6 +11,7 @@ import FirebaseMessaging
 import FirebaseInstanceID
 import Firebase
 import GoogleMaps
+import OneSignal
 
 var mainClass: Main!
 
@@ -34,40 +35,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     
-    
-    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         mainClass = Main()
         listenForLogin()
         formatNavBar()
         
-        NSNotificationCenter.defaultCenter().addObserver(self,
-                                                         selector: #selector(tokenRefreshNotification(_:)),
-                                                         name: kFIRInstanceIDTokenRefreshNotification,
-                                                         object: nil)
-        //let token = FIRInstanceID.instanceID().token()!
-        //print("The token is \(token)")
+        OneSignal.initWithLaunchOptions(launchOptions, appId: "b12a0a39-2757-422b-ae30-4f775385c1f6")
         
-        //registerForNotifications(application) TODO: ADD this back in if you want push notifications
+        
         return true
     }
     
     
-    
-    
-    
-    
     func listenForLogin() {
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
-            if user != nil && mainClass.loginTime {
-                if var nextController = self.window!.rootViewController {
-                    var topController = self.window!.rootViewController!
-                    while let presentedViewController = nextController.presentedViewController {
-                        if !(presentedViewController is UINavigationController) {
-                            topController = presentedViewController
-                        }
-                        nextController = presentedViewController
+            if var nextController = self.window!.rootViewController {
+                var topController = self.window!.rootViewController!
+                while let presentedViewController = nextController.presentedViewController {
+                    if !(presentedViewController is UINavigationController) {
+                        topController = presentedViewController
                     }
+                    nextController = presentedViewController
+                }
+                if user != nil && mainClass.loginTime {
                     //topController is the current VC
                     if !user!.emailVerified {
                         if topController is ViewController {
@@ -81,10 +71,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         self.window?.rootViewController = initialViewController
                     }
                 }
+                else {
+                    //we have a new user! Make sure to get their notifications ID
+                    if topController is ViewController {
+                        let loginScreen =  self.window!.rootViewController! as! ViewController
+                        OneSignal.IdsAvailable({ (userId, pushToken) in
+                            print("user notifications id is \(userId)")
+                            loginScreen.notificationsID = userId
+                        })
+                    }
+                }
             }
         }
     }
-    
     
     
     
@@ -99,28 +98,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     
-    func tokenRefreshNotification(notification: NSNotification) {
-        print("We are going to get a token")
-        let refreshedToken = FIRInstanceID.instanceID().token()!
-        print("InstanceID token: \(refreshedToken)")
-        
-        // Connect to FCM since connection may have failed when attempted before having a token.
-        connectToFcm()
-    }
-
-    
-    
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject],
                      fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         // If you are receiving a notification message while your app is in the background,
         // this callback will not be fired till the user taps on the notification launching the application.
         // TODO: Handle data of notification
         
-        // Print message ID.
-        print("Message ID: \(userInfo["gcm.message_id"]!)")
-        
-        // Print full message.
-        print("%@", userInfo)
     }
     
     
@@ -134,20 +117,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerForRemoteNotifications()
     }
     
-    func connectToFcm() {
-        FIRMessaging.messaging().connectWithCompletion { (error) in
-            if (error != nil) {
-                print("Unable to connect with FCM. \(error)")
-            } else {
-                print("Connected to FCM.")
-            }
-        }
-    }
-    
-    func application(application: UIApplication,
-                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        FIRInstanceID.instanceID().setAPNSToken(deviceToken, type: FIRInstanceIDAPNSTokenType.Sandbox)
-    }
     
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

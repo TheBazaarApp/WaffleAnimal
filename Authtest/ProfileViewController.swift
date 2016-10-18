@@ -74,7 +74,6 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     var loadingBackground: UIView!
     var picsComing = 10 {
         didSet {
-            print("pics coming: \(picsComing)")
             if picsComing == 0 {
                 considerRemovingCircle()
             }
@@ -87,13 +86,10 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     
     
     func considerRemovingCircle() {
-        print("considering removing")
         if startPayingAttention {
-            print("gonna hide")
             // (possibly) remove circle
             let triggerTime = (Int64(NSEC_PER_SEC) * 1)
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
-                print("hiding now")
                 self.hideLoadingCircle()
             })
         }
@@ -103,6 +99,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     override func viewDidLoad() {
         showLoadingCircle()
         super.viewDidLoad()
+        self.view.layoutIfNeeded()
         moreUnsold.hidden = true
         moreSold.hidden = true
         morePurchased.hidden = true
@@ -414,7 +411,6 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
         //Get unsold items from the database and storage
         let dataRef = ref.child("\(self.college!)/user/\(uid!)/\(category)Items")
         dataRef.observeEventType(FIRDataEventType.Value, withBlock: { (snapshot) in
-            print("PAY ATTENTION!  We just observed an event \(dataRef)")
             
             if let allItems = snapshot.value as? [String : AnyObject] {
                 var imageIDArray = Array(allItems.keys) //String array of item IDs

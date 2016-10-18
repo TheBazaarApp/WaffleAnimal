@@ -85,7 +85,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
             //mapToolbar.items = toolbarItems
             camera = GMSCameraPosition.cameraWithLatitude(self.lat!, longitude: self.long!, zoom: 17)
             if latDefault != nil {
-                print("should be pinning to default")
                 prepareToPin(latDefault!, long: longDefault!, type: .DefaultLocation, description: defaultLoc)
             }
             

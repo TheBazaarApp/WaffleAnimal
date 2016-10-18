@@ -182,7 +182,6 @@ class CollectionViewCell: UICollectionViewCell, UITextViewDelegate, UITextFieldD
             
             if textField.text!.containsString(".") {
                 if replacementString.containsString(".") { //Return false if the user is trying to type two decimals
-                    print("you can't put in 2 decimals")
                     return false
                 }
                 let newDecimalArray = newString.componentsSeparatedByString(".")
@@ -194,7 +193,6 @@ class CollectionViewCell: UICollectionViewCell, UITextViewDelegate, UITextFieldD
                 }
             }
             if textField.text == "$" && newString == "$." { //If the user tries to write $., add in a zero: $0.
-                print("got in the right case $.")
                 textField.text = "$0"
             }
             

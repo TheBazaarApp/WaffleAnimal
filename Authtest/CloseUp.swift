@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import MessageUI
+import OneSignal
 
 class CloseUp: UIViewController, MFMailComposeViewControllerDelegate {
     
@@ -73,12 +74,16 @@ class CloseUp: UIViewController, MFMailComposeViewControllerDelegate {
     var hasPic = true
     var imageRef: FIRDatabaseReference!
     var aaa: FIRDatabaseHandle?
+    var sellerHolder = IDHolder()
+    var buyerHolder = IDHolder()
+
     
     //MARK: SETUP
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.layoutIfNeeded()
         if category == "sold" {
             if !transactionCanceled {
                 buy.setTitle("Confirm Finished Transaction", forState: .Normal)
@@ -141,6 +146,13 @@ class CloseUp: UIViewController, MFMailComposeViewControllerDelegate {
         
         getDefault()
         getItemInfo()
+        if let sellerID = sellerUID {
+            mainClass.getNotificationID(sellerID, holder: sellerHolder)
+
+        }
+        if let buyerId = buyerUID {
+            mainClass.getNotificationID(buyerId, holder: buyerHolder)
+        }
     }
     
     
@@ -280,11 +292,11 @@ class CloseUp: UIViewController, MFMailComposeViewControllerDelegate {
                     
                     
                     
-                    let name = itemData["name"] as! String
+                    self.name = itemData["name"] as? String
                     if self.tag == "In Search Of" {
-                        self.itemName.text = "In Search Of: " + name
+                        self.itemName.text = "In Search Of: " + self.name!
                     } else {
-                        self.itemName.text = name
+                        self.itemName.text = self.name!
                     }
                     
                     
@@ -683,6 +695,8 @@ class CloseUp: UIViewController, MFMailComposeViewControllerDelegate {
                     let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
                     messageSeller.addAction(okayAction)
                     messageSeller.addAction(cancelAction)
+                    
+                    
                     self.presentViewController(messageSeller, animated: true, completion: nil)
                 }
                 let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
@@ -763,20 +777,28 @@ class CloseUp: UIViewController, MFMailComposeViewControllerDelegate {
         if status == "Seller Cancelled Transaction" {
             buyerNotificationDetails["message"] = "\(sellerName) cancelled the sale of the \(itemName.text!)"
             buyerNotificationDetails["type"] = "SellerRejected"
+            OneSignal.postNotification(["contents": ["en": "Please rate \(sellerName) after your cancelled transaction"], "headings": ["en": "\(sellerName) cancelled the sale of the \(itemName.text!)"], "include_player_ids": [self.buyerHolder.id]])
+            
             sellerNotificationDetails["message"] = "Please rate \(buyerName) after your cancelled transaction."
             sellerNotificationDetails["type"] = "Rating"
+            
         }
         if status == "Transaction Complete" {
             buyerNotificationDetails["message"] = "Please rate \(sellerName) after your transaction."
             buyerNotificationDetails["type"] = "Rating"
+            OneSignal.postNotification(["contents": ["en": "Please rate \(sellerName) after your  transaction"], "headings": ["en": "\(sellerName) confirmed the sale of the \(itemName.text!)"], "include_player_ids": [self.buyerHolder.id]])
+            
             sellerNotificationDetails["message"] = "Please rate \(buyerName) after your transaction."
             sellerNotificationDetails["type"] = "Rating"
         }
         if status == "Buyer Cancelled Transaction" {
             buyerNotificationDetails["message"] = "Please rate \(sellerName) after your cancelled transaction."
             buyerNotificationDetails["type"] = "Rating"
+            
             sellerNotificationDetails["message"] = "\(buyerName) cancelled the sale of the \(itemName.text!)"
             sellerNotificationDetails["type"] = "Rating"
+            OneSignal.postNotification(["contents": ["en": "Please rate \(buyerName) after your cancelled transaction"], "headings": ["en": "\(buyerName) cancelled the sale of the \(itemName.text!)"], "include_player_ids": [self.sellerHolder.id]])
+            
         }
         
         let pathToBuyerNotification = "/\(buyerCollege)/user/\(buyerUID)/notifications/"
@@ -844,6 +866,8 @@ class CloseUp: UIViewController, MFMailComposeViewControllerDelegate {
                               "uid": sellerUID!,
                               "albumID": albumID!,
                               "seller": seller!]
+        
+        OneSignal.postNotification(["contents": ["en": "Please arrange a meeting time/place to complete the transaction!"], "headings": ["en": "\(currentUsername!) has bought your \(name!)!"], "include_player_ids": [self.sellerHolder.id]])
         
         let itemInfo = ref.child("/\(sellerCollege!)/user/\(sellerUID!)/unsoldItems/\(imageID!)")
         itemInfo.observeSingleEventOfType(.Value, withBlock:  { snapshot in

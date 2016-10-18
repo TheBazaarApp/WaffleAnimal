@@ -71,7 +71,6 @@ class CollegeChooser: UIViewController {
     
     
     @IBAction func savePressed(sender: AnyObject) {
-        print("segueloc is \(segueLoc)")
         if segueLoc == "skipAndBrowse" || segueLoc == "feed" {
             saveCollegesToLocalStorage()
         } else {
@@ -79,7 +78,6 @@ class CollegeChooser: UIViewController {
             if segueLoc == "firstTime" {
                 performSegueWithIdentifier("maleficent", sender: nil)
             } else {
-                print("popping now")
                 navigationController?.popViewControllerAnimated(true)
             }
         }

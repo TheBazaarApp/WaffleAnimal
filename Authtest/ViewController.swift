@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var loginButton: UIButton!
     
     var segueLoc = ""
+    var notificationsID = ""
     
     
     override func viewWillAppear(animated: Bool) {
@@ -118,6 +119,10 @@ class ViewController: UIViewController {
                 destination.segueLoc = "skipAndBrowse"
                 destination.previousVC = self
             }
+        }
+        if segue.identifier == "iago" { //Called when user goes to create account
+            let createAccount = segue.destinationViewController as! CreateAccountViewController
+            createAccount.notificationsID = self.notificationsID
         }
     }
     

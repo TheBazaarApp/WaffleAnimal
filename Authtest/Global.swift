@@ -24,6 +24,7 @@ class Main {
     var loginTime = true
     var collegeLocation: [Double]?
     var initialized = false
+    var tempNotificationID = ""
     
     init() {
         emailGetter = EmailDomainGetter()
@@ -36,16 +37,13 @@ class Main {
                 
                 let emailArray = self.email?.componentsSeparatedByString("@")
                 self.collegeDomain = emailArray![emailArray!.count - 1]
-                print("college domain is \(self.collegeDomain)")
                 self.domainBranch = self.emailGetter.getRealDomain(self.collegeDomain!)
-                print("domain branch is \(self.domainBranch)")
                 self.collegeName = self.emailGetter.getNameFromDomain(self.domainBranch!)
                 self.initialized = true
                 self.getCollegeLocation()
             }
         }
     }
-    
     
     
     func getCollegeLocation() {
@@ -58,18 +56,18 @@ class Main {
     }
     
     
-//    
-//    func getTopController() {
-//        if var nextController = SharedApplication.rootViewController {
-//            var topController = self.window!.rootViewController!
-//            while let presentedViewController = nextController.presentedViewController {
-//                if !(presentedViewController is UINavigationController) {
-//                    topController = presentedViewController
-//                }
-//                nextController = presentedViewController
-//            }
-//    }
-//    
+    //
+    //    func getTopController() {
+    //        if var nextController = SharedApplication.rootViewController {
+    //            var topController = self.window!.rootViewController!
+    //            while let presentedViewController = nextController.presentedViewController {
+    //                if !(presentedViewController is UINavigationController) {
+    //                    topController = presentedViewController
+    //                }
+    //                nextController = presentedViewController
+    //            }
+    //    }
+    //
     
     
     
@@ -115,6 +113,20 @@ class Main {
     }
     
     
+    func getNotificationID(receiveruid: String, holder: IDHolder) {
+        let ref = FIRDatabase.database().reference()
+        let pathToPushNotifications = ref.child("users/\(receiveruid)")
+        pathToPushNotifications.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let notificationID = snapshot.value as? [String: String] {
+                if let notificationKey = notificationID["notificationsID"] as String? {
+                    holder.id = notificationKey
+                }
+            }
+        })
+    }
+    
+    
+    
     
     
     
@@ -124,7 +136,7 @@ extension String {
     func removeBadWords() -> UIAlertController? {
         for word in self.componentsSeparatedByString(" ") {
             if badWords.contains(word.lowercaseString) {
-                let ac = UIAlertController(title: "Inappropriate Language", message: "We detected an inappropriate word :(. Please remove the word and try again", preferredStyle: .Alert)
+                let ac = UIAlertController(title: "Inappropriate Language", message: "We detected an inappropriate word 😞. Please remove the word and try again", preferredStyle: .Alert)
                 ac.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
                 return ac
             }
@@ -152,3 +164,6 @@ extension UIApplication {
 }
 
 
+class IDHolder {
+    var id = ""
+}

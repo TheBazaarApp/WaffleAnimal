@@ -38,7 +38,6 @@ class NewKeyword: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     
     func saveNewKeyword() {
-        print("saving keyword")
         var keyTerm = ""
         var type = "Keyword"
         
@@ -81,7 +80,6 @@ class NewKeyword: UIViewController, UITableViewDelegate, UITableViewDataSource {
 //            let value = [uid : true] //TODO: Fix this!
 //        }
         
-        print("about to pop")
         navigationController?.popViewControllerAnimated(true)
     }
     

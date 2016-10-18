@@ -80,9 +80,7 @@ class KeywordListener: UITableViewController {
     
     func listenForNewKeywords() {
         let followingRef = ref.child("\(college)/user/\(uid)/following")
-        print("ref is \(followingRef)")
         followingRef.observeEventType(FIRDataEventType.ChildAdded, withBlock: { (snapshot) in
-            print("got something!")
             let followingData = snapshot.value as! [String : AnyObject]
             let keyTerm = followingData["keyTerm"] as! String
             let type = self.convertStringToListenerType(followingData["type"] as! String)

@@ -58,6 +58,7 @@
 		2BFAFAB41D106D9900CD1EA8 /* CreateAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BFAFAB31D106D9900CD1EA8 /* CreateAccountViewController.swift */; };
 		2BFAFAB81D10B97A00CD1EA8 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BFAFAB71D10B97A00CD1EA8 /* MapViewController.swift */; };
 		2D18C7BB1D650B5C0022F2CA /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D18C7BA1D650B5C0022F2CA /* File.swift */; };
+		41294CC61DB5F0FA0025E24D /* FeedCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41294CC51DB5F0F60025E24D /* FeedCollectionView.swift */; };
 		419995E11D9270D8009D949B /* ReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419995E01D9270D8009D949B /* ReportViewController.swift */; };
 		990790F81D683A7E00ABCA08 /* ItemTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990790F71D683A7E00ABCA08 /* ItemTableViewController.swift */; };
 		990790FA1D69166E00ABCA08 /* FeedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990790F91D69166E00ABCA08 /* FeedTableViewCell.swift */; };
@@ -129,7 +130,9 @@
 		2BFAFAB71D10B97A00CD1EA8 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		2D18C7BA1D650B5C0022F2CA /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		3D09CF547DE81DC1BAC7883B /* Pods-Authtest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Authtest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Authtest/Pods-Authtest.debug.xcconfig"; sourceTree = "<group>"; };
+		41294CC51DB5F0F60025E24D /* FeedCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedCollectionView.swift; sourceTree = "<group>"; };
 		419995E01D9270D8009D949B /* ReportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportViewController.swift; sourceTree = "<group>"; };
+		419DADA81DB3ED8A00D57D35 /* Bazaar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Bazaar.entitlements; sourceTree = "<group>"; };
 		990790F71D683A7E00ABCA08 /* ItemTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemTableViewController.swift; sourceTree = "<group>"; };
 		990790F91D69166E00ABCA08 /* FeedTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableViewCell.swift; sourceTree = "<group>"; };
 		996E69741D7A376B005A662B /* KeywordListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeywordListener.swift; sourceTree = "<group>"; };
@@ -238,11 +241,11 @@
 		2BBFA2BE1D0F725600D735B1 /* Authtest */ = {
 			isa = PBXGroup;
 			children = (
+				419DADA81DB3ED8A00D57D35 /* Bazaar.entitlements */,
 				2B1F04881D21CAB400177672 /* Pictures */,
 				2B1F04871D21CAAA00177672 /* Integrated Classes */,
 				2B95BFF21D1E034200693203 /* Categories */,
 				2B7F74371D186A8600CF7DE2 /* SWRevealViewController */,
-				2BBFA2BF1D0F725600D735B1 /* AppDelegate.swift */,
 				2B59680B1D2EDD0C00E038D7 /* Main.storyboard */,
 				2BBFA2C81D0F725600D735B1 /* LaunchScreen.storyboard */,
 				2BBFA2C61D0F725600D735B1 /* Assets.xcassets */,
@@ -255,6 +258,7 @@
 				2BAC6FB81D302B6D00077D83 /* ConversationTableViewController.swift */,
 				2BAC6FB61D302AFF00077D83 /* contactsCell.swift */,
 				2BAD3AC81D41ABD600191154 /* NotificationsHandler.swift */,
+				2BBFA2BF1D0F725600D735B1 /* AppDelegate.swift */,
 				2BAD3AC41D41ABC600191154 /* NotificationCell.swift */,
 				2B5F20711D2C6F5C00724E76 /* Item.swift */,
 				2BAD3AC61D41ABD000191154 /* NotificationsPage.swift */,
@@ -279,6 +283,7 @@
 				99993DEE1D6BFD1C0031A885 /* AdminFunctions.swift */,
 				2B5F206F1D2C6F2000724E76 /* FeedController.swift */,
 				990790F91D69166E00ABCA08 /* FeedTableViewCell.swift */,
+				41294CC51DB5F0F60025E24D /* FeedCollectionView.swift */,
 				998864B31D6D832A00841EDF /* FeedCollectionCell.swift */,
 				998864B51D6FB6A300841EDF /* CollegeChooserTableView.swift */,
 				996E69741D7A376B005A662B /* KeywordListener.swift */,
@@ -490,6 +495,7 @@
 				2B928B131D11F2A100EB8FB4 /* MapTasks.swift in Sources */,
 				2B1F04971D21CAE200177672 /* ViewItemsCell.swift in Sources */,
 				2BAD3AC71D41ABD000191154 /* NotificationsPage.swift in Sources */,
+				41294CC61DB5F0FA0025E24D /* FeedCollectionView.swift in Sources */,
 				2BAC6FB51D302ABE00077D83 /* CloseUp.swift in Sources */,
 				2B7F74431D186CF300CF7DE2 /* CategoriesTableViewController.swift in Sources */,
 				2BBA19DE1D55422000264157 /* Settings.swift in Sources */,
@@ -615,6 +621,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Authtest/Bazaar.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = FPDCRD54AS;
@@ -641,6 +648,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Authtest/Bazaar.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = FPDCRD54AS;

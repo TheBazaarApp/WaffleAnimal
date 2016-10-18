@@ -34,7 +34,7 @@ class ConversationViewController: UITableViewController {
         navigationController?.navigationBarHidden = false
         tabBarController?.tabBar.hidden = false
         let messageRoot = self.rootRef.child("\(college!)/user/\(FIRAuth.auth()!.currentUser!.uid)/messages/recents").queryOrderedByChild("timestamp")
-        messageRoot.observeEventType(.ChildAdded, withBlock: { snapshot in
+            messageRoot.observeEventType(.ChildAdded, withBlock: { snapshot in
             let chat = snapshot.key
             self.chatting.append(chat) //TODO: Someone messages you while you're looking at this page - what happens?
             

@@ -27,7 +27,7 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
     @IBOutlet weak var add: UIImageView!
     
     
- 
+    
     
     //Probs w. pics
     
@@ -99,7 +99,7 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
         addButton = UITapGestureRecognizer(target:self, action: #selector(addTapped))
         add.addGestureRecognizer(addButton!)
         albumName.delegate = self
-        collectionView.keyboardDismissMode = .OnDrag
+        collectionView.keyboardDismissMode = .Interactive
     }
     
     func howToPopup() {
@@ -283,8 +283,8 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                         self.getImage(newItem, imageID: imageKey)
                     } else {
                         newItem.picture = UIImage(named: "Add Image")
-                        self.collectionView.reloadData()
                     }
+                    self.collectionView.reloadData()
                 }
                 if self.tagAll == true {
                     self.tagAllField.text = self.items[self.items.count-1].tag
@@ -452,9 +452,9 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                             detailsUnderAlbums["hasPic"] = false
                         }
                         
-                            detailsUnderItems["locationLat"] = lat ?? NSNull()
-                            detailsUnderItems["locationLong"] = long ?? NSNull()
-                            detailsUnderItems["location"] = location ?? NSNull()
+                        detailsUnderItems["locationLat"] = lat ?? NSNull()
+                        detailsUnderItems["locationLong"] = long ?? NSNull()
+                        detailsUnderItems["location"] = location ?? NSNull()
                     }
                     
                     childUpdates["\(college)/user/\(uid!)/albums/\(key)/unsoldItems/\(imageKey!)"] = detailsUnderAlbums
@@ -477,13 +477,13 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                                                 "sellerName": userName!,
                                                 "timestamp": timestamp] as [String: AnyObject]
                 
-                    albumDetailsUnderUser["locationLat"] = lat ?? NSNull()
-                    albumDetailsUnderUser["locationLong"] = long ?? NSNull()
-                    albumDetailsUnderUser["location"] = location ?? NSNull()
-                    albumDetailsUnderCollege["locationLat"] = lat ?? NSNull()
-                    albumDetailsUnderCollege["locationLong"] = long ?? NSNull()
-                    albumDetailsUnderCollege["location"] = location ?? NSNull()
-
+                albumDetailsUnderUser["locationLat"] = lat ?? NSNull()
+                albumDetailsUnderUser["locationLong"] = long ?? NSNull()
+                albumDetailsUnderUser["location"] = location ?? NSNull()
+                albumDetailsUnderCollege["locationLat"] = lat ?? NSNull()
+                albumDetailsUnderCollege["locationLong"] = long ?? NSNull()
+                albumDetailsUnderCollege["location"] = location ?? NSNull()
+                
                 
                 
                 childUpdates["\(college)/user/\(uid!)/albums/\(key)/albumDetails"] = albumDetailsUnderUser
@@ -578,11 +578,11 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
             self.openImagePicker(true)
         }))
         if addingNewItem {
-        optionsMenu.addAction(UIAlertAction(title: "Add Item Without Image", style: .Default, handler: {  (alert: UIAlertAction!) -> Void in
-            if self.addingNewItem {
-                self.createNewItem(nil)
-            }
-        }))
+            optionsMenu.addAction(UIAlertAction(title: "Add Item Without Image", style: .Default, handler: {  (alert: UIAlertAction!) -> Void in
+                if self.addingNewItem {
+                    self.createNewItem(nil)
+                }
+            }))
         }
         if let imageButton = imageButton {
             if self.items[self.imagePickingIndex].hasPic {
@@ -703,7 +703,7 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
         cell.item = item //Add item to cell
         cell.tag = indexPath.row
         //Add border and curved edges to the cell
-        cell.itemImage.layer.cornerRadius = cell.itemImage.frame.size.width / 20
+        cell.itemImage.layer.cornerRadius = 5
         cell.itemImage.clipsToBounds = true
         
         
