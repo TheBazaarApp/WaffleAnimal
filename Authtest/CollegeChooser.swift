@@ -35,7 +35,6 @@ class CollegeChooser: UIViewController {
     var collList = [String]()
     var previousColleges = [String]()
     let ref = FIRDatabase.database().reference() //Root of the realtime database
-    //let uid = FIRAuth.auth()!.currentUser!.uid
     var segueLoc = ""
     var previousVC: ViewController?
     

@@ -18,13 +18,13 @@ class NewKeyword: UIViewController, UITableViewDelegate, UITableViewDataSource {
     let uid = mainClass.uid!
     let college = mainClass.domainBranch!
     let ref = mainClass.ref
-    let categories = ["None", "Fashion", "Electronics", "Appliances", "Transportation", "Furniture", "School Supplies", "Services", "In Search Of", "Other"]
+    let categories = ["Fashion", "Electronics", "Appliances", "Transportation", "Furniture", "School Supplies", "Services", "In Search Of", "Other"]
     let blue = mainClass.ourBlue
     var cellBackgroundColor = UIColor.lightGrayColor()
     var cellTextColor = UIColor.darkGrayColor()
     var selectedRowIndex: Int?
     var termsFollowing: [(keyTerm: String, type: KeywordListener.ListenerType, key: String)]? //(Term, Type, Key)
-    
+    var notificationsIDHolder = IDHolder()
     
     
     override func viewDidLoad() {
@@ -34,6 +34,7 @@ class NewKeyword: UIViewController, UITableViewDelegate, UITableViewDataSource {
         categoryTableView.dataSource = self
         formatKeywordTextbox(true)
         formatCategoryTableView(false)
+        mainClass.getNotificationID(uid, holder: notificationsIDHolder)
     }
     
     
@@ -67,35 +68,24 @@ class NewKeyword: UIViewController, UITableViewDelegate, UITableViewDataSource {
             }
         }
         // If we're still here, it's a valid key term to save
-        
-        
-        
         let key = ref.child("\(college)/user/\(uid)/following").childByAutoId().key
-        
-        
         let userData = [ "keyTerm" : keyTerm,
                              "type": type]
-        
         var childUpdates = ["\(college)/user/\(uid)/following/\(key)": userData]
-        
         
         for college in mainClass.collegeTradingList {
             let pathKey = "\(college)/\(type)/\(keyTerm)"
-            let colUpdates = [uid : "OTHER ID"]
+            let colUpdates = [uid : notificationsIDHolder.id]
             childUpdates[pathKey] = colUpdates
         }
-        
-        
         ref.updateChildValues(childUpdates)
-        
-        
         navigationController?.popViewControllerAnimated(true)
     }
     
     
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return 9
     }
     
     

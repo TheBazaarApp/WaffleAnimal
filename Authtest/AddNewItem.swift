@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import Photos
+import OneSignal
 
 class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
     
@@ -62,6 +63,7 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
     var addingNewItem = true
     var imagePickingIndex = 0
     var showedISOPopupAlready = false
+    let myIdHolder = IDHolder()
     
     
     
@@ -100,7 +102,10 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
         add.addGestureRecognizer(addButton!)
         albumName.delegate = self
         collectionView.keyboardDismissMode = .Interactive
+        mainClass.getNotificationID(uid!, holder: myIdHolder)
     }
+    
+    
     
     func howToPopup() {
         hideablePopup("Adding Items", message: "Add multiple items to your album by tapping the '+' button.", defaultsKey: "AddNewItemHowTo")
@@ -417,6 +422,9 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
                     }
                     
                     
+                    sendKeywordNotifications(item);
+                    
+                    
                     //Store item details in the database in two different places (by album, and just by image) (*** Maybe one more place as well)
                     let name = item.itemName //as NSString
                     let description = item.itemDescription //as NSString
@@ -670,6 +678,63 @@ class AddNewItem: UIViewController, UICollectionViewDataSource, UICollectionView
     
     
     
+    func sendKeywordNotifications(item: Item) {
+        //Get all the people currently following this category
+        let categoryRef = ref.child("/\(college)/Category/\(item.tag)")
+        categoryRef.observeSingleEventOfType(.Value, withBlock:  { snapshot in
+            var ids = String()
+            if let followersDict = snapshot.value as? [String: String] {
+                let IDs = Array(followersDict.values)
+                for id in IDs {
+                    if id != self.myIdHolder.id {
+                        ids += id
+                        //Send each person a notification
+                        let text = "\(mainClass.displayName!) just posted a new item: \(item.itemName) in category \(item.tag)."
+                        let heading = "New Item Available!"
+                        OneSignal.postNotification(["contents": ["en": text], "headings": ["en": heading], "include_player_ids": [id]])
+                    }
+                }
+            }
+            
+            ids += self.myIdHolder.id
+            
+            
+            //Get all the people currently follwing this keyword
+            let keywordRef = self.ref.child("/\(self.college)/Keyword/")
+            keywordRef.observeSingleEventOfType(.Value, withBlock:  { snapshot in
+                if let keyTermsDict = snapshot.value as? [String: [String: String]] {
+                    let combinedString =  (item.itemName + " " + item.itemDescription).lowercaseString
+                    for (term, termFollowers) in keyTermsDict {
+                        
+                        // Check if the term is in that item
+                        if combinedString.lowercaseString.rangeOfString(term.lowercaseString) != nil {
+                            // Send a notification to each person following the term
+                            for id in termFollowers.values {
+                                //Check that you haven't already sent a notification
+                                if !ids.containsString(id) {
+                                    let text = "\(mainClass.displayName!) just posted a new item: \(item.itemName)."
+                                    let heading = "New Item Available!"
+                                    print("got to the middle: \(id)")
+                                    OneSignal.postNotification(["contents": ["en": text], "headings": ["en": heading], "include_player_ids": [id]])
+                                }
+                            }
+                        }
+                        
+                        
+                        
+                    }
+                }
+            })
+            
+            
+            
+        })
+    }
+
+    
+    
+    
+
     
     
     

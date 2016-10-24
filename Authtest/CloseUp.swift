@@ -718,6 +718,14 @@ class CloseUp: UIViewController, MFMailComposeViewControllerDelegate {
     
     
     
+
+    
+    
+    
+    
+    
+    
+    
     func pushedSecondButton() {
         //If the transaction hasn't been cancelled yet, the user is pushing the "Cancel Transaction" button
         if !transactionCanceled {
