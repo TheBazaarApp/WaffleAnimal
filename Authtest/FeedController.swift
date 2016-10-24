@@ -38,7 +38,6 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
     let ref = FIRDatabase.database().reference()
     let user = FIRAuth.auth()?.currentUser
     private let queue = dispatch_queue_create("pleasepleasework", DISPATCH_QUEUE_CONCURRENT)
-    var collegeTradingList = [String]()
     var listeners = [FIRDatabaseHandle] ()
     var dragging = false
     var loadingCircle: NVActivityIndicatorView!
@@ -213,7 +212,7 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
     //Call Firebase to get image IDs from database.
     func getRecentItems() {
         if mainClass.user != nil {
-            self.collegeTradingList.append(self.college!)
+            mainClass.collegeTradingList.append(self.college!)
             //get colleges
             let collegesRef = self.ref.child("\(self.college!)/user/\(self.user!.uid)/settings/colleges")
             collegesRef.observeEventType(FIRDataEventType.Value, withBlock: { (snapshot) in
@@ -222,7 +221,7 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
                 self.tableView!.reloadData()
                 let collegeArray = snapshot.value as? NSArray
                 if collegeArray != nil {
-                    self.collegeTradingList += collegeArray as! [String]
+                    mainClass.collegeTradingList += collegeArray as! [String]
                 }
                 self.listenToColleges()
             })
@@ -230,7 +229,7 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
             let defaults = NSUserDefaults.standardUserDefaults()
             let colList = defaults.objectForKey("skipAndBrowseColleges")
             if let list = colList as? [String] {
-                self.collegeTradingList = list
+                mainClass.collegeTradingList = list
                 self.listenToColleges()
             }
         }
@@ -240,7 +239,7 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
     
     
     func listenToColleges() {
-        for college in self.collegeTradingList {
+        for college in mainClass.collegeTradingList {
             let feed = self.ref.child("\(college)/albums").queryLimitedToLast(100)
             self.createChildAddedListener(feed, college: college)
             self.createChildChangedListener(feed, college: college)
@@ -948,7 +947,7 @@ class FeedController: SearchBarTableViewController, UICollectionViewDelegate, UI
             if let destination = segue.destinationViewController as? CollegeChooser {
                 destination.segueLoc = "feed"
                 var collegeNames = [String]()
-                for col in collegeTradingList {
+                for col in mainClass.collegeTradingList {
                     if let colName = mainClass.emailGetter.getNameFromDomain(col) {
                         collegeNames.append(colName)
                     }

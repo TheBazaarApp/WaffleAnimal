@@ -25,6 +25,7 @@ class Main {
     var collegeLocation: [Double]?
     var initialized = false
     var tempNotificationID = ""
+    var collegeTradingList = [String]()
     
     init() {
         emailGetter = EmailDomainGetter()

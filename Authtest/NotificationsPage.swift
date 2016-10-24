@@ -23,7 +23,7 @@ class NotificationsPage: UITableViewController {
         super.viewDidLoad()
         listenForNotifications()
         listenForRemovedNotifications()
-        //self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Key Terms", style: .Plain, target: self, action: #selector(goToKeyTerms)) //TODO: add this back in once we have notifications
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Key Terms", style: .Plain, target: self, action: #selector(goToKeyTerms)) //TODO: add this back in once we have notifications
         self.navigationItem.rightBarButtonItem = self.editButtonItem()
         self.tableView.rowHeight = 70.0
         

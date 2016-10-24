@@ -87,7 +87,7 @@ class KeywordListener: UITableViewController {
             let key = snapshot.key
             self.termsFollowing.append((keyTerm: keyTerm, type: type, key: key))
             self.tableView.reloadData()
-                    })
+        })
     }
     
     
@@ -148,6 +148,10 @@ class KeywordListener: UITableViewController {
             // Delete the row from the data source
             let termToDelete = termsFollowing[indexPath.row]
             ref.child("\(college)/user/\(uid)/following/\(termToDelete.key)").setValue(NSNull())
+            for college in mainClass.collegeTradingList {
+                print("path is \("\(college)/\(termToDelete.type)/\(termToDelete.keyTerm)/\(uid)")")
+                ref.child("\(college)/\(termToDelete.type)/\(termToDelete.keyTerm)/\(uid)").setValue(NSNull())
+            }
             termsFollowing.removeAtIndex(indexPath.row)
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         }
