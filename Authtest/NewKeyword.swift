@@ -63,22 +63,31 @@ class NewKeyword: UIViewController, UITableViewDelegate, UITableViewDataSource {
         for term in termsFollowing! {
             if term.type == convertedType && term.keyTerm == keyTerm {
                 mainClass.simpleAlert("Can't Save", message: "You are already following this key term", viewController: self)
+                return
             }
         }
-//        let userFollowingRef = ref.child("\(college)/user/\(uid)/following").childByAutoId()
-//        
-//        let userData = [ "keyTerm" : keyTerm,
-//                             "type": type]
-//        
-//        var childUpdates = [userFollowingRef: ]//STUFF; wrong format?
-//        
-//        userFollowingRef.updateChildValues(childUpdates)
-//        
-//        
-//        for college in colleges {
-//            let pathKey = "keyTerms/\(college)/\(type)"
-//            let value = [uid : true] //TODO: Fix this!
-//        }
+        // If we're still here, it's a valid key term to save
+        
+        
+        
+        let key = ref.child("\(college)/user/\(uid)/following").childByAutoId().key
+        
+        
+        let userData = [ "keyTerm" : keyTerm,
+                             "type": type]
+        
+        var childUpdates = ["\(college)/user/\(uid)/following/\(key)": userData]
+        
+        
+        for college in mainClass.collegeTradingList {
+            let pathKey = "\(college)/\(type)/\(keyTerm)"
+            let colUpdates = [uid : "OTHER ID"]
+            childUpdates[pathKey] = colUpdates
+        }
+        
+        
+        ref.updateChildValues(childUpdates)
+        
         
         navigationController?.popViewControllerAnimated(true)
     }
