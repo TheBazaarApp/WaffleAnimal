@@ -97,7 +97,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     
     
     override func viewDidLoad() {
-        showLoadingCircle()
+        //showLoadingCircle()
         super.viewDidLoad()
         self.view.layoutIfNeeded()
         moreUnsold.hidden = true
