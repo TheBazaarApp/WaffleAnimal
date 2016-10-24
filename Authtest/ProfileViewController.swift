@@ -70,15 +70,15 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     var profilePicData = NSData()
     var moreButtonsDict = [String: UIButton]()
     var otherPersonsProfile = false
-    var loadingCircle: NVActivityIndicatorView!
-    var loadingBackground: UIView!
-    var picsComing = 10 {
-        didSet {
-            if picsComing == 0 {
-                considerRemovingCircle()
-            }
-        }
-    }
+   // var loadingCircle: NVActivityIndicatorView!
+   // var loadingBackground: UIView!
+//    var picsComing = 10 {
+//        didSet {
+//            if picsComing == 0 {
+//                considerRemovingCircle()
+//            }
+//        }
+//    }
     var startPayingAttention = true
     var hasPic = false
     
@@ -88,10 +88,10 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     func considerRemovingCircle() {
         if startPayingAttention {
             // (possibly) remove circle
-            let triggerTime = (Int64(NSEC_PER_SEC) * 1)
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
-                self.hideLoadingCircle()
-            })
+ //           let triggerTime = (Int64(NSEC_PER_SEC) * 1)
+//            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
+//                self.hideLoadingCircle()
+//            })
         }
     }
     
@@ -151,7 +151,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     
     
     func hideExtraViews() {
-        picsComing -= 6
+       // picsComing -= 6
         otherPersonsProfile = true
         addButton.removeFromSuperview()
         soldButton.removeFromSuperview()
@@ -180,27 +180,27 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
     
     
     
-    func showLoadingCircle() {
-        let quarterWidth = self.view.frame.width/4
-        loadingCircle = NVActivityIndicatorView(frame: CGRectMake(quarterWidth, quarterWidth * 2, quarterWidth * 2, quarterWidth * 2), type: .BallSpinFadeLoader, color: mainClass.ourGold)
-        loadingBackground = UIView()
-        loadingBackground.frame = CGRectMake(0, 0, self.view.frame.width, 10000)
-        loadingBackground.backgroundColor = .whiteColor()
-        self.view.addSubview(loadingBackground)
-        self.view.addSubview(loadingCircle)
-        loadingCircle.startAnimation()
-        let triggerTime = (Int64(NSEC_PER_SEC) * 10)
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
-            self.hideLoadingCircle()
-        })
-    }
+//    func showLoadingCircle() {
+//        let quarterWidth = self.view.frame.width/4
+//        loadingCircle = NVActivityIndicatorView(frame: CGRectMake(quarterWidth, quarterWidth * 2, quarterWidth * 2, quarterWidth * 2), type: .BallSpinFadeLoader, color: mainClass.ourGold)
+//        loadingBackground = UIView()
+//        loadingBackground.frame = CGRectMake(0, 0, self.view.frame.width, 10000)
+//        loadingBackground.backgroundColor = .whiteColor()
+//        self.view.addSubview(loadingBackground)
+//        self.view.addSubview(loadingCircle)
+//        loadingCircle.startAnimation()
+//        let triggerTime = (Int64(NSEC_PER_SEC) * 10)
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
+//            self.hideLoadingCircle()
+//        })
+//    }
     
-    
-    func hideLoadingCircle() {
-        loadingCircle.stopAnimation()
-        loadingCircle.removeFromSuperview()
-        loadingBackground.removeFromSuperview()
-    }
+//    
+//    func hideLoadingCircle() {
+//        loadingCircle.stopAnimation()
+//        loadingCircle.removeFromSuperview()
+//        loadingBackground.removeFromSuperview()
+//    }
     
     
     
@@ -276,7 +276,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
             if error != nil {
                 self.profilePic.image = UIImage(named: "ic_profile")
                 self.hasPic = false
-                self.picsComing -= 1
+               // self.picsComing -= 1
             }
             else {
                 dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) { [weak self] in
@@ -289,7 +289,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
                                 if self != nil {
                                     self!.profilePic.image = UIImage(data: data)
                                     self!.hasPic = true
-                                    self!.picsComing -= 1
+                                   // self!.picsComing -= 1
                                 }
                             }
                         }
@@ -441,8 +441,8 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
                 }
                 
                 
-                let picsMissing = 3 - imageSlotsToFill.count
-                self.picsComing -= picsMissing
+               // let picsMissing = 3 - imageSlotsToFill.count
+               // self.picsComing -= picsMissing
                 
                 
                 let shuffledArray = GKRandomSource.sharedRandom().arrayByShufflingObjectsInArray(imageIDArray) //Randomize array
@@ -541,7 +541,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
                     else {
                         imageView.image = mainClass.defaultPic(item.tag) //TODO: Crash here
                         imageView.tag = i
-                        self.picsComing -= 1
+                     //   self.picsComing -= 1
                     }
                 })
             } else {
@@ -551,7 +551,7 @@ class ProfileViewController: UIViewController,  UIImagePickerControllerDelegate,
                         dispatch_async(dispatch_get_main_queue()) { [weak self] in
                             imageView.image = image
                             imageView.tag = i
-                            self!.picsComing -= 1
+                       //     self!.picsComing -= 1
                         }
                     }
                 }
